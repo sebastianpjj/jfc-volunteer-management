@@ -23,7 +23,7 @@ shifts_data.each do |shift_data|
     s.start_date = event.date.beginning_of_day + shift_data[:hour_offset].hours
     s.end_date = s.start_date + 3.hours
   end
-  
+
   puts "Created shift: #{shift.name} (#{shift.max_volunteers} max volunteers)"
 end
 

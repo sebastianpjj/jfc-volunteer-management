@@ -1,6 +1,6 @@
 class Api::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  
+
   def index
     @events = Event.includes(:shifts).order(:date)
     render json: @events.as_json(

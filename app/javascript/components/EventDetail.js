@@ -53,23 +53,23 @@ const EventDetail = ({ eventId }) => {
   const formatTimeRange = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     const startTime = start.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const endTime = end.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const date = start.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric'
     });
-    
+
     return `${date}, ${startTime} - ${endTime}`;
   };
 
@@ -93,13 +93,13 @@ const EventDetail = ({ eventId }) => {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-6">Available Volunteer Shifts</h2>
-          
+
           {event.shifts && event.shifts.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {event.shifts.map(shift => (
-                <ShiftCard 
-                  key={shift.id} 
-                  shift={shift} 
+                <ShiftCard
+                  key={shift.id}
+                  shift={shift}
                   onRegister={() => handleRegisterClick(shift)}
                   disabled={shift.full}
                 />
@@ -129,23 +129,23 @@ const ShiftCard = ({ shift, onRegister, disabled }) => {
   const formatTimeRange = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     const startTime = start.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const endTime = end.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const date = start.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric'
     });
-    
+
     return `${date}, ${startTime} - ${endTime}`;
   };
 
@@ -162,7 +162,7 @@ const ShiftCard = ({ shift, onRegister, disabled }) => {
       <p className="text-gray-600 mb-2">Group: {shift.group_name}</p>
       <p className="text-gray-600 mb-2">Time: {formatTimeRange(shift.start_date, shift.end_date)}</p>
       <p className="text-gray-600 mb-4">Duration: {calculateDuration(shift.start_date, shift.end_date)} hours</p>
-      
+
       <div className="mb-4">
         <div className="flex justify-between items-center">
           <p className="text-sm text-gray-600">
@@ -179,13 +179,13 @@ const ShiftCard = ({ shift, onRegister, disabled }) => {
           )}
         </div>
       </div>
-      
+
       <button
         onClick={onRegister}
         disabled={disabled}
         className={`w-full py-2 px-4 rounded transition-colors ${
-          disabled 
-            ? 'bg-gray-400 text-gray-700 cursor-not-allowed' 
+          disabled
+            ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
             : 'bg-green-600 text-white hover:bg-green-700'
         }`}
       >
@@ -246,17 +246,17 @@ const RegistrationForm = ({ shift, event, onSuccess, onCancel }) => {
   const formatTimeRange = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     const startTime = start.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const endTime = end.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     return `${startTime} - ${endTime}`;
   };
 
@@ -264,7 +264,7 @@ const RegistrationForm = ({ shift, event, onSuccess, onCancel }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h3 className="text-xl font-semibold mb-4">Register for Volunteer Shift</h3>
-        
+
         <div className="mb-4 p-3 bg-gray-100 rounded">
           <p><strong>Event:</strong> {event.name}</p>
           <p><strong>Shift:</strong> {shift.name} ({shift.group_name})</p>

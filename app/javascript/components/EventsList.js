@@ -30,7 +30,7 @@ const EventsList = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">Football Club - Volunteer Opportunities</h1>
-      
+
       {events.length === 0 ? (
         <div className="text-center text-gray-600">No events available at the moment.</div>
       ) : (
@@ -56,20 +56,20 @@ const EventCard = ({ event }) => {
 
   const formatTimeRange = (startDate, endDate) => {
     if (!startDate || !endDate) return '';
-    
+
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     const startTime = start.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const endTime = end.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     return `${startTime} - ${endTime}`;
   };
 
@@ -77,7 +77,7 @@ const EventCard = ({ event }) => {
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <h2 className="text-xl font-semibold mb-2">{event.name}</h2>
       <p className="text-gray-600 mb-4">{formatDate(event.date)}</p>
-      
+
       <div className="mb-4">
         <h3 className="font-medium mb-2">Available Shifts:</h3>
         {event.shifts && event.shifts.length > 0 ? (
@@ -88,7 +88,7 @@ const EventCard = ({ event }) => {
                   <div>
                     <div className="font-medium">{shift.name} ({shift.group_name})</div>
                     <div className="text-xs text-gray-500">
-                      {formatTimeRange(shift.start_date, shift.end_date)} 
+                      {formatTimeRange(shift.start_date, shift.end_date)}
                       {shift.duration_in_hours && ` • ${shift.duration_in_hours}h`}
                     </div>
                   </div>
@@ -114,8 +114,8 @@ const EventCard = ({ event }) => {
           <p className="text-sm text-gray-500">No shifts available</p>
         )}
       </div>
-      
-      <a 
+
+      <a
         href={`/events/${event.id}`}
         className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
       >

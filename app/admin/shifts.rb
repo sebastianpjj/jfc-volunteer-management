@@ -1,6 +1,6 @@
 ActiveAdmin.register Shift do
   permit_params :name, :group_name, :start_date, :end_date, :event_id, :max_volunteers
-  
+
   index do
     selectable_column
     id_column
@@ -37,16 +37,16 @@ ActiveAdmin.register Shift do
     end
     actions do |shift|
       if shift.can_be_deleted?
-        item "Delete", admin_shift_path(shift), method: :delete, 
+        item "Delete", admin_shift_path(shift), method: :delete,
              confirm: "Are you sure you want to delete this shift?",
              class: "member_link delete_link"
       else
-        item "Cannot Delete", "#", class: "member_link disabled", 
+        item "Cannot Delete", "#", class: "member_link disabled",
              title: shift.deletion_blocked_message
       end
     end
   end
-  
+
   show do
     attributes_table do
       row "Event" do |shift|
@@ -84,7 +84,7 @@ ActiveAdmin.register Shift do
         end
       end
     end
-    
+
     panel "Registrations" do
       if shift.registrations.any?
         table_for shift.registrations do
@@ -105,7 +105,7 @@ ActiveAdmin.register Shift do
       end
     end
   end
-  
+
   form do |f|
     f.inputs "Shift Details" do
       f.input :event, collection: Event.order(:date), include_blank: false
@@ -117,7 +117,7 @@ ActiveAdmin.register Shift do
     end
     f.actions
   end
-  
+
   controller do
     def destroy
       if resource.can_be_deleted?

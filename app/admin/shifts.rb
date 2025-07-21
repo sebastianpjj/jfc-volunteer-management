@@ -1,0 +1,131 @@
+ActiveAdmin.register Shift do
+  permit_params :name, :group_name, :start_date, :end_date, :event_id, :max_volunteers
+  
+  index do
+    selectable_column
+    id_column
+    column "Event" do |shift|
+      link_to shift.event.name, admin_event_path(shift.event)
+    end
+    column :name
+    column :group_name
+    column "Time Range" do |shift|
+      shift.time_range
+    end
+    column "Duration" do |shift|
+      "#{shift.duration_in_hours}h"
+    end
+    column "Registrations" do |shift|
+      count = shift.registrations.count
+      max = shift.max_volunteers
+      if count > 0
+        if shift.full?
+          status_tag("#{count}/#{max} (FULL)", :error)
+        else
+          status_tag("#{count}/#{max} registered", :ok)
+        end
+      else
+        status_tag("0/#{max} (empty)", :empty)
+      end
+    end
+    column "Deletion Status" do |shift|
+      if shift.can_be_deleted?
+        status_tag("Can be deleted", :ok)
+      else
+        status_tag("Protected", :error)
+      end
+    end
+    actions do |shift|
+      if shift.can_be_deleted?
+        item "Delete", admin_shift_path(shift), method: :delete, 
+             confirm: "Are you sure you want to delete this shift?",
+             class: "member_link delete_link"
+      else
+        item "Cannot Delete", "#", class: "member_link disabled", 
+             title: shift.deletion_blocked_message
+      end
+    end
+  end
+  
+  show do
+    attributes_table do
+      row "Event" do |shift|
+        link_to shift.event.name, admin_event_path(shift.event)
+      end
+      row :name
+      row :group_name
+      row "Start Date/Time" do |shift|
+        shift.start_date.strftime("%B %d, %Y at %I:%M %p")
+      end
+      row "End Date/Time" do |shift|
+        shift.end_date.strftime("%B %d, %Y at %I:%M %p")
+      end
+      row "Duration" do |shift|
+        "#{shift.duration_in_hours} hours"
+      end
+      row "Time Range" do |shift|
+        shift.time_range
+      end
+      row "Registration Count" do |shift|
+        "#{shift.spots_taken} / #{shift.max_volunteers} volunteers"
+      end
+      row "Capacity Status" do |shift|
+        if shift.full?
+          status_tag("FULL - No more registrations possible", :error)
+        else
+          status_tag("#{shift.spots_remaining} spots remaining", :ok)
+        end
+      end
+      row "Deletion Status" do |shift|
+        if shift.can_be_deleted?
+          status_tag("This shift can be deleted", :ok)
+        else
+          status_tag(shift.deletion_blocked_message, :error)
+        end
+      end
+    end
+    
+    panel "Registrations" do
+      if shift.registrations.any?
+        table_for shift.registrations do
+          column "Volunteer Name" do |registration|
+            registration.name
+          end
+          column :email
+          column :phone
+          column "Registered At" do |registration|
+            registration.created_at.strftime("%B %d, %Y at %I:%M %p")
+          end
+          column "Actions" do |registration|
+            link_to "View", admin_registration_path(registration), class: "member_link"
+          end
+        end
+      else
+        div "No registrations for this shift."
+      end
+    end
+  end
+  
+  form do |f|
+    f.inputs "Shift Details" do
+      f.input :event, collection: Event.order(:date), include_blank: false
+      f.input :name
+      f.input :group_name
+      f.input :max_volunteers, label: "Maximum Volunteers", hint: "How many volunteers can register for this shift?"
+      f.input :start_date, as: :datetime_picker, label: "Start Date/Time"
+      f.input :end_date, as: :datetime_picker, label: "End Date/Time"
+    end
+    f.actions
+  end
+  
+  controller do
+    def destroy
+      if resource.can_be_deleted?
+        super
+      else
+        flash[:error] = resource.deletion_blocked_message
+        redirect_to admin_shift_path(resource)
+      end
+    end
+  end
+end

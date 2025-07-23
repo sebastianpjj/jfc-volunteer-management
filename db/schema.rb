@@ -48,7 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_185247) do
     t.string "name"
     t.string "email"
     t.string "phone"
-    t.integer "shift_id", null: false
+    t.bigint "shift_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shift_id"], name: "index_registrations_on_shift_id"
@@ -57,7 +57,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_185247) do
   create_table "shifts", force: :cascade do |t|
     t.string "name"
     t.string "group_name"
-    t.integer "event_id", null: false
+    t.bigint "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "start_date", null: false

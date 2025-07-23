@@ -78,7 +78,6 @@ namespace :deploy do
   end
 
   before :starting, :check_revision
-  after  :updating, :migrate_database
   after  :finishing, :compile_assets
   after  :finishing, :cleanup
   after  :finishing, 'passenger:restart'

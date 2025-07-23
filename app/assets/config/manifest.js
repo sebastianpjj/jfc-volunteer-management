@@ -2,3 +2,4 @@
 //= link application.css
 //= link active_admin.scss
 //= link active_admin.js
+//= link react_components.js

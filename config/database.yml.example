@@ -1,0 +1,81 @@
+# MySQL. Versions 5.7.8 and up are supported.
+#   gem install mysql2
+#
+#   Ensure the MySQL gem is defined in your Gemfile
+#   gem "mysql2"
+#
+# Copy this file to database.yml and update with your actual credentials
+#
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: root
+  password: YOUR_PASSWORD_HERE
+  host: localhost
+
+development:
+  primary:
+    <<: *default
+    database: jfc_hands_development
+  queue:
+    <<: *default
+    database: jfc_hands_development_queue
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    database: jfc_hands_development_cache
+    migrations_paths: db/cache_migrate
+  cable:
+    <<: *default
+    database: jfc_hands_development_cable
+    migrations_paths: db/cable_migrate
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  primary:
+    <<: *default
+    database: jfc_hands_test
+  queue:
+    <<: *default
+    database: jfc_hands_test_queue
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    database: jfc_hands_test_cache
+    migrations_paths: db/cache_migrate
+  cable:
+    <<: *default
+    database: jfc_hands_test_cable
+    migrations_paths: db/cable_migrate
+
+production:
+  primary:
+    <<: *default
+    database: jfc_hands_production
+    # username: <%= ENV['DB_USERNAME'] %>
+    # password: <%= ENV['DB_PASSWORD'] %>
+    # host: <%= ENV['DB_HOST'] || 'localhost' %>
+  queue:
+    <<: *default
+    database: jfc_hands_production_queue
+    migrations_paths: db/queue_migrate
+    # username: <%= ENV['DB_USERNAME'] %>
+    # password: <%= ENV['DB_PASSWORD'] %>
+    # host: <%= ENV['DB_HOST'] || 'localhost' %>
+  cache:
+    <<: *default
+    database: jfc_hands_production_cache
+    migrations_paths: db/cache_migrate
+    # username: <%= ENV['DB_USERNAME'] %>
+    # password: <%= ENV['DB_PASSWORD'] %>
+    # host: <%= ENV['DB_HOST'] || 'localhost' %>
+  cable:
+    <<: *default
+    database: jfc_hands_production_cable
+    migrations_paths: db/cable_migrate
+    # username: <%= ENV['DB_USERNAME'] %>
+    # password: <%= ENV['DB_PASSWORD'] %>
+    # host: <%= ENV['DB_HOST'] || 'localhost' %>

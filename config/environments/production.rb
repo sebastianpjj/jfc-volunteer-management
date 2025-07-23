@@ -48,6 +48,7 @@ Rails.application.configure do
 
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :solid_cache_store
+  config.solid_cache.connects_to = { database: { writing: :cache } }
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :solid_queue
@@ -58,8 +59,8 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options  = { host: 'helfer.eintracht-feldberg.net/', protocol: :https }
-  config.action_mailer.asset_host           = 'https://helfer.eintracht-feldberg.net/'
+  config.action_mailer.default_url_options  = { host: 'helfer.eintracht-feldberg.net', protocol: :https }
+  config.action_mailer.asset_host           = 'https://helfer.eintracht-feldberg.net'
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {

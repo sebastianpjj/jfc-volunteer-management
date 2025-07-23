@@ -13,8 +13,21 @@ default: &default
   host: localhost
 
 development:
-  <<: *default
-  database: jfc_hands_development
+  primary:
+    <<: *default
+    database: jfc_hands_development
+  queue:
+    <<: *default
+    database: jfc_hands_development_queue
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    database: jfc_hands_development_cache
+    migrations_paths: db/cache_migrate
+  cable:
+    <<: *default
+    database: jfc_hands_development_cable
+    migrations_paths: db/cable_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

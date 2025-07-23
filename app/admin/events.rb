@@ -1,6 +1,11 @@
 ActiveAdmin.register Event do
   permit_params :name, :date, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
 
+  filter :name
+  filter :date
+  filter :created_at
+  filter :updated_at
+
   index do
     selectable_column
     id_column
@@ -13,21 +18,6 @@ ActiveAdmin.register Event do
       total_spots = event.shifts.sum(:max_volunteers)
       taken_spots = event.registrations.count
       "#{taken_spots} / #{total_spots}"
-    end
-    column "Total Registrations" do |event|
-      count = event.registrations.count
-      if count > 0
-        status_tag("#{count} registered", :ok)
-      else
-        status_tag("No registrations", :empty)
-      end
-    end
-    column "Status" do |event|
-      if event.can_be_deleted?
-        status_tag("Can be deleted", :ok)
-      else
-        status_tag("Protected - Has registrations", :error)
-      end
     end
     actions
   end
@@ -47,30 +37,24 @@ ActiveAdmin.register Event do
           div "Registered: #{taken} volunteers (#{percentage}%)"
           div "Available: #{remaining} spots remaining"
 
-          if percentage > 80
-            status_tag("Nearly Full", :error)
+          status_text = if percentage > 80
+            "Nearly Full"
           elsif percentage > 50
-            status_tag("Half Full", :warning)
+            "Half Full"
           elsif taken > 0
-            status_tag("Some Registration", :ok)
+            "Some Registration"
           else
-            status_tag("No Registrations", :empty)
+            "No Registrations"
           end
+          div "Status: #{status_text}"
         end
       end
       row "Total Registrations" do |event|
         count = event.registrations.count
         if count > 0
-          status_tag("#{count} total registrations", :ok)
+          "#{count} total registrations"
         else
-          status_tag("No registrations", :empty)
-        end
-      end
-      row "Deletion Status" do |event|
-        if event.can_be_deleted?
-          status_tag("Event can be deleted", :ok)
-        else
-          status_tag("Event is protected from deletion", :error)
+          "No registrations"
         end
       end
     end
@@ -90,19 +74,12 @@ ActiveAdmin.register Event do
           max = shift.max_volunteers
           if count > 0
             if shift.full?
-              status_tag("#{count}/#{max} (FULL)", :error)
+              "#{count}/#{max} (FULL)"
             else
-              status_tag("#{count}/#{max} registered", :ok)
+              "#{count}/#{max} registered"
             end
           else
-            status_tag("0/#{max} (empty)", :empty)
-          end
-        end
-        column "Status" do |shift|
-          if shift.can_be_deleted?
-            status_tag("Can be deleted", :ok)
-          else
-            status_tag("Protected - Has registrations", :error)
+            "0/#{max} (empty)"
           end
         end
       end
@@ -112,21 +89,38 @@ ActiveAdmin.register Event do
   form do |f|
     f.inputs "Event Details" do
       f.input :name
-      f.input :date, as: :datetime_picker
+      f.input :date, as: :datetime_picker,
+              input_html: {
+                value: f.object.date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
+                step: 900  # 15 minute intervals
+              },
+              hint: "Datum und Uhrzeit in lokaler Zeit (Berlin)"
     end
 
     f.inputs "Shifts" do
       f.has_many :shifts, allow_destroy: true, new_record: true do |s|
         s.input :name
-        s.input :group_name
-        s.input :max_volunteers, label: "Maximum Volunteers", hint: "How many volunteers can register for this shift?"
-        s.input :start_date, as: :datetime_picker, label: "Start Date/Time"
-        s.input :end_date, as: :datetime_picker, label: "End Date/Time"
+        s.input :group_name, hint: "Gruppierung für die Anzeige (z.B. 'Aufbau', 'Verkauf', 'Abbau')"
+        s.input :max_volunteers, label: "Maximum Volunteers", hint: "Wie viele Freiwillige können sich für diese Schicht anmelden?"
+        s.input :start_date, as: :datetime_picker,
+                label: "Start Datum/Zeit",
+                input_html: {
+                  value: s.object.start_date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
+                  step: 900  # 15 minute intervals
+                },
+                hint: "Startzeit in lokaler Zeit (Berlin)"
+        s.input :end_date, as: :datetime_picker,
+                label: "End Datum/Zeit",
+                input_html: {
+                  value: s.object.end_date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
+                  step: 900  # 15 minute intervals
+                },
+                hint: "Endzeit in lokaler Zeit (Berlin)"
 
         # Show warning for shifts that can't be deleted
         if s.object.persisted? && !s.object.can_be_deleted?
           div class: "alert alert-warning", style: "margin: 10px 0; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;" do
-            strong "⚠️ Warning: "
+            strong "⚠️ Warnung: "
             span s.object.deletion_blocked_message
           end
         end

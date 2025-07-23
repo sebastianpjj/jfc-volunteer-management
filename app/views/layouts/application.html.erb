@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Jfc Hands" %></title>
+    <title>JFC Eintracht Feldberg - Helfende Hände</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -13,18 +12,72 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <!-- JFC Eintracht Feldberg Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/favicon-192x192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+
+    <!-- Google Fonts - Match Eintracht Feldberg -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@600&display=swap" rel="stylesheet">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%# Use Sprockets for basic application.js and importmap for ES6 modules %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+
+    <!-- Tailwind CSS with JFC Eintracht Feldberg theme -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'heading': ['Plus Jakarta Sans', 'sans-serif']
+            },
+            colors: {
+              'jfc-green': '#618F1D',
+              'jfc-navy': '#1a3d6d',
+              'jfc-light-green': '#7bb63a',
+              'jfc-gray': '#444444',
+              'jfc-light-gray': '#f8fafc'
+            }
+          }
+        }
+      }
+    </script>
+
+    <%# Enable importmap for local JavaScript modules %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-jfc-light-gray font-sans text-jfc-gray">
+    <!-- Header Section -->
+    <header class="bg-jfc-green text-white shadow-lg">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center space-x-4">
+          <%= link_to "/", class: "flex-shrink-0" do %>
+            <%= image_tag "logo-jfc-cropped.png", alt: "JFC Eintracht Feldberg", class: "h-12 w-auto" %>
+          <% end %>
+          <div>
+            <h1 class="text-3xl font-heading font-semibold heading-on-green">JFC Eintracht Feldberg</h1>
+            <p class="text-jfc-light-green text-lg">Helfende Hände</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+      <%= yield %>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-jfc-green text-white mt-16">
+      <div class="container mx-auto px-4 py-8 text-center">
+        <p class="text-sm">&copy; <%= Date.current.year %> JFC Eintracht Feldberg - Alle Rechte vorbehalten</p>
+      </div>
+    </footer>
   </body>
 </html>

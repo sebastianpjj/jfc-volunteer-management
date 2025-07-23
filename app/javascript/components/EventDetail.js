@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const EventDetail = ({ eventId }) => {
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedShift, setSelectedShift] = useState(null);
-  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [event, setEvent] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const [registrationStatus, setRegistrationStatus] = React.useState({});
+  const [registrationErrors, setRegistrationErrors] = React.useState({});
+  const [showRegistrationForm, setShowRegistrationForm] = React.useState(null);
+  const [showSuccessDialog, setShowSuccessDialog] = React.useState(false);
+  const [successDialogData, setSuccessDialogData] = React.useState({});
+  const [volunteerInfo, setVolunteerInfo] = React.useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
 
-  useEffect(() => {
+  React.useEffect(() => {
+    console.log(`🎯 EventDetail component mounted for event ${eventId}`);
     fetchEvent();
   }, [eventId]);
 
@@ -15,331 +24,520 @@ const EventDetail = ({ eventId }) => {
     try {
       const response = await fetch(`/api/events/${eventId}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch event');
+        throw new Error('Fehler beim Laden der Veranstaltung');
       }
       const data = await response.json();
+      console.log('📊 Event detail data loaded:', data);
       setEvent(data);
     } catch (err) {
+      console.error('❌ Error fetching event:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRegisterClick = (shift) => {
-    setSelectedShift(shift);
-    setShowRegistrationForm(true);
-  };
-
-  const onRegistrationSuccess = () => {
-    setShowRegistrationForm(false);
-    setSelectedShift(null);
-    fetchEvent(); // Refresh event data
-  };
-
-  if (loading) return <div className="text-center p-4">Loading event...</div>;
-  if (error) return <div className="text-center p-4 text-red-600">Error: {error}</div>;
-  if (!event) return <div className="text-center p-4">Event not found</div>;
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const formatTimeRange = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const startTime = start.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const endTime = end.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const date = start.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    });
-
-    return `${date}, ${startTime} - ${endTime}`;
-  };
-
-  const calculateDuration = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffHours = (end - start) / (1000 * 60 * 60);
-    return diffHours.toFixed(1);
-  };
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <a href="/events" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
-            ← Back to Events
-          </a>
-          <h1 className="text-3xl font-bold mb-2">{event.name}</h1>
-          <p className="text-xl text-gray-600">{formatDate(event.date)}</p>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-6">Available Volunteer Shifts</h2>
-
-          {event.shifts && event.shifts.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {event.shifts.map(shift => (
-                <ShiftCard
-                  key={shift.id}
-                  shift={shift}
-                  onRegister={() => handleRegisterClick(shift)}
-                  disabled={shift.full}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center text-gray-600 py-8">
-              No volunteer shifts available for this event.
-            </div>
-          )}
-        </div>
-
-        {showRegistrationForm && selectedShift && (
-          <RegistrationForm
-            shift={selectedShift}
-            event={event}
-            onSuccess={onRegistrationSuccess}
-            onCancel={() => setShowRegistrationForm(false)}
-          />
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ShiftCard = ({ shift, onRegister, disabled }) => {
-  const formatTimeRange = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const startTime = start.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const endTime = end.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const date = start.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    });
-
-    return `${date}, ${startTime} - ${endTime}`;
-  };
-
-  const calculateDuration = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffHours = (end - start) / (1000 * 60 * 60);
-    return diffHours.toFixed(1);
-  };
-
-  return (
-    <div className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${disabled ? 'bg-gray-50 border-gray-300' : ''}`}>
-      <h3 className="text-lg font-semibold mb-2">{shift.name}</h3>
-      <p className="text-gray-600 mb-2">Group: {shift.group_name}</p>
-      <p className="text-gray-600 mb-2">Time: {formatTimeRange(shift.start_date, shift.end_date)}</p>
-      <p className="text-gray-600 mb-4">Duration: {calculateDuration(shift.start_date, shift.end_date)} hours</p>
-
-      <div className="mb-4">
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-600">
-            Volunteers: {shift.spots_taken || 0} / {shift.available_spots || 0}
-          </p>
-          {shift.full ? (
-            <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">
-              FULL
-            </span>
-          ) : (
-            <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
-              {shift.spots_remaining || 0} spots left
-            </span>
-          )}
-        </div>
-      </div>
-
-      <button
-        onClick={onRegister}
-        disabled={disabled}
-        className={`w-full py-2 px-4 rounded transition-colors ${
-          disabled
-            ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-            : 'bg-green-600 text-white hover:bg-green-700'
-        }`}
-      >
-        {disabled ? 'Shift is Full' : 'Register as Volunteer'}
-      </button>
-    </div>
-  );
-};
-
-const RegistrationForm = ({ shift, event, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    shift_id: shift.id
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-
+  const handleRegister = async (shiftId) => {
     try {
+      setRegistrationStatus(prev => ({ ...prev, [shiftId]: 'loading' }));
+      setRegistrationErrors(prev => ({ ...prev, [shiftId]: null })); // Clear previous errors
+
       const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
         },
-        body: JSON.stringify({ registration: formData })
+        body: JSON.stringify({
+          registration: {
+            shift_id: shiftId,
+            name: volunteerInfo.name || 'Freiwilliger Helfer',
+            email: volunteerInfo.email || 'volunteer@example.com',
+            phone: volunteerInfo.phone || ''
+          }
+        })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.error && errorData.error === 'This shift is full') {
-          throw new Error(errorData.message || 'This shift is already full. Please choose another shift.');
-        }
-        throw new Error(errorData.errors ? errorData.errors.join(', ') : 'Registration failed');
-      }
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Registration successful:', result);
+        setRegistrationStatus(prev => ({ ...prev, [shiftId]: 'success' }));
+        setShowRegistrationForm(null);
 
-      alert('Registration successful! Thank you for volunteering!');
-      onSuccess();
+        // Show success dialog with volunteer and shift information
+        const shift = event.shifts.find(s => s.id === shiftId);
+        const startFormatted = formatDateTimeWithDay(shift?.start_date, event.date);
+        const endFormatted = formatDateTimeWithDay(shift?.end_date, event.date);
+
+        setSuccessDialogData({
+          volunteerName: volunteerInfo.name,
+          shiftName: shift?.name || 'Unbekannte Schicht',
+          eventName: event.name,
+          shiftTime: shift ? `${startFormatted.text} - ${endFormatted.text}` : ''
+        });
+        setShowSuccessDialog(true);
+
+        setVolunteerInfo({ name: '', email: '', phone: '' });
+
+        // Refresh event data to show updated availability
+        await fetchEvent();
+      } else {
+        const errorData = await response.json();
+        console.error('❌ Registration failed:', errorData);
+
+        // Extract specific error message
+        let errorMessage = 'Fehler bei der Anmeldung';
+        if (errorData.errors) {
+          if (typeof errorData.errors === 'string') {
+            errorMessage = errorData.errors;
+          } else if (Array.isArray(errorData.errors)) {
+            errorMessage = errorData.errors.join(', ');
+          } else if (typeof errorData.errors === 'object') {
+            // Handle field-specific errors like { email: ["is invalid"] }
+            const errorMessages = Object.entries(errorData.errors)
+              .map(([field, messages]) => {
+                const fieldName = field === 'email' ? 'E-Mail' :
+                                  field === 'name' ? 'Name' :
+                                  field === 'phone' ? 'Telefon' : field;
+                const messageList = Array.isArray(messages) ? messages : [messages];
+                return `${fieldName}: ${messageList.join(', ')}`;
+              });
+            errorMessage = errorMessages.join('; ');
+          }
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+
+        setRegistrationStatus(prev => ({ ...prev, [shiftId]: 'error' }));
+        setRegistrationErrors(prev => ({ ...prev, [shiftId]: errorMessage }));
+      }
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setSubmitting(false);
+      console.error('❌ Registration error:', err);
+      setRegistrationStatus(prev => ({ ...prev, [shiftId]: 'error' }));
+      setRegistrationErrors(prev => ({
+        ...prev,
+        [shiftId]: 'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.'
+      }));
     }
   };
 
-  const formatTimeRange = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const startTime = start.toLocaleTimeString('en-US', {
+  const formatDateTime = (dateString) => {
+    return new Date(dateString).toLocaleString('de-DE', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
-
-    const endTime = end.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    return `${startTime} - ${endTime}`;
   };
 
+  const formatTime = (dateString) => {
+    return new Date(dateString).toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const formatDateTimeWithDay = (dateString, eventDate) => {
+    const shiftDate = new Date(dateString);
+    const eventDateObj = new Date(eventDate);
+
+    // Check if the shift is on a different day than the event
+    const isDifferentDay = shiftDate.toDateString() !== eventDateObj.toDateString();
+
+    // Always show day name and time
+    const dayName = shiftDate.toLocaleDateString('de-DE', { weekday: 'short' });
+    const time = shiftDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+    return { text: `${dayName} ${time}`, isDifferent: isDifferentDay };
+  };
+
+  const groupShiftsByGroupName = (shifts) => {
+    if (!shifts || shifts.length === 0) return {};
+
+    // Sort shifts by start_date first
+    const sortedShifts = [...shifts].sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+    // Group by group_name and then by date (weekday)
+    return sortedShifts.reduce((groups, shift) => {
+      const groupName = shift.group_name || 'Allgemeine Schichten';
+      const shiftDate = new Date(shift.start_date);
+      const dateKey = shiftDate.toDateString(); // Use full date as key for grouping
+      const weekday = shiftDate.toLocaleDateString('de-DE', { weekday: 'long' });
+      const dateFormatted = shiftDate.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
+      const combinedKey = `${groupName}__${dateKey}`;
+
+      if (!groups[combinedKey]) {
+        groups[combinedKey] = {
+          groupName,
+          weekday,
+          date: dateFormatted,
+          dateKey,
+          shifts: []
+        };
+      }
+      groups[combinedKey].shifts.push(shift);
+      return groups;
+    }, {});
+  };
+
+  if (loading) {
+    return (
+      React.createElement('div', {
+        className: 'flex justify-center items-center py-16'
+      },
+        React.createElement('div', {
+          className: 'text-center'
+        },
+          React.createElement('div', {
+            className: 'animate-spin rounded-full h-12 w-12 border-b-2 border-jfc-green mx-auto mb-4'
+          }),
+          React.createElement('p', {
+            className: 'text-jfc-gray font-semibold'
+          }, 'Veranstaltungsdetails werden geladen...')
+        )
+      )
+    );
+  }
+
+  if (error) {
+    return (
+      React.createElement('div', {
+        className: 'max-w-4xl mx-auto p-6'
+      },
+        React.createElement('div', {
+          className: 'bg-red-50 border border-red-200 rounded-lg p-6 text-center'
+        },
+          React.createElement('div', {
+            className: 'text-red-600 text-lg font-semibold mb-2'
+          }, '⚠️ Fehler'),
+          React.createElement('p', {
+            className: 'text-red-700'
+          }, error),
+          React.createElement('a', {
+            href: '/events',
+            className: 'mt-4 inline-block bg-jfc-green text-white button-styled px-6 py-2 rounded-lg hover:bg-jfc-light-green transition-colors'
+          }, '← Zurück zur Übersicht')
+        )
+      )
+    );
+  }
+
+  if (!event) {
+    return (
+      React.createElement('div', {
+        className: 'max-w-4xl mx-auto p-6 text-center'
+      },
+        React.createElement('p', {
+          className: 'text-jfc-gray'
+        }, 'Veranstaltung nicht gefunden.')
+      )
+    );
+  }
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-xl font-semibold mb-4">Register for Volunteer Shift</h3>
+    React.createElement('div', {
+      className: 'max-w-6xl mx-auto p-6'
+    },
+      // Header Section
+      React.createElement('div', {
+        className: 'mb-8'
+      },
+        React.createElement('div', {
+          className: 'flex justify-between items-start'
+        },
+          React.createElement('div', null,
+            React.createElement('h1', {
+              className: 'text-4xl font-heading font-semibold mb-4 text-jfc-navy'
+            }, event.name),
+            React.createElement('p', {
+              className: 'text-jfc-navy text-lg'
+            }, `📅 ${formatDateTime(event.date)}`)
+          ),
+          React.createElement('a', {
+            href: '/events',
+            className: 'bg-gray-100 hover:bg-gray-200 text-gray-600 button-styled px-4 py-2 rounded-lg transition-colors border border-gray-200'
+          }, '← Zurück')
+        )
+      ),
 
-        <div className="mb-4 p-3 bg-gray-100 rounded">
-          <p><strong>Event:</strong> {event.name}</p>
-          <p><strong>Shift:</strong> {shift.name} ({shift.group_name})</p>
-          <p><strong>Time:</strong> {formatTimeRange(shift.start_date, shift.end_date)}</p>
-          <p><strong>Date:</strong> {new Date(shift.start_date).toLocaleDateString()}</p>
-        </div>
+      // Shifts Section
+      React.createElement('div', {
+        className: 'grid gap-6'
+      },
+        React.createElement('h2', {
+          className: 'text-3xl font-heading font-semibold text-jfc-navy mb-6 mt-8'
+        }, 'Verfügbare Schichten'),
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        event.shifts && event.shifts.length > 0
+          ? Object.entries(groupShiftsByGroupName(event.shifts)).map(([combinedKey, groupData]) =>
+              React.createElement('div', {
+                key: combinedKey,
+                className: 'mb-8'
+              },
+                React.createElement('div', {
+                  className: 'mb-4'
+                },
+                  React.createElement('h3', {
+                    className: 'text-2xl font-heading font-semibold text-jfc-navy mb-2 flex items-center'
+                  },
+                    React.createElement('span', {
+                      className: 'w-3 h-3 bg-jfc-green rounded-full mr-3'
+                    }),
+                    `${groupData.groupName} - ${groupData.weekday}, ${groupData.date}`
+                  ),
+                  React.createElement('div', {
+                    className: 'h-0.5 bg-gradient-to-r from-jfc-green to-transparent w-full'
+                  })
+                ),
+                React.createElement('div', {
+                  className: 'grid gap-4'
+                },
+                  groupData.shifts.map(shift =>
+                    React.createElement('div', {
+                      key: shift.id,
+                      className: `bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200 ${shift['full?'] ? 'opacity-75' : ''}`
+                    },
+                      React.createElement('div', {
+                        className: `p-4 ${shift['full?'] ? 'bg-gray-50' : 'bg-white'}`
+                      },
+                        React.createElement('div', {
+                          className: 'flex justify-between items-center mb-2'
+                        },
+                          React.createElement('div', {
+                            className: 'flex-1'
+                          },
+                            React.createElement('h4', {
+                              className: 'text-base font-heading font-semibold text-jfc-navy mb-1'
+                            }, shift.name),
+                            React.createElement('div', {
+                              className: 'flex items-center text-jfc-gray text-xs space-x-3'
+                            },
+                              React.createElement('span', {
+                                className: 'flex items-center'
+                              },
+                                React.createElement('span', {
+                                  className: 'mr-1'
+                                }, '⏰'),
+                                (() => {
+                                  const startFormatted = formatDateTimeWithDay(shift.start_date, event.date);
+                                  const endFormatted = formatDateTimeWithDay(shift.end_date, event.date);
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+                                  return React.createElement('span', {}, `${startFormatted.text} - ${endFormatted.text}`);
+                                })()
+                              ),
+                              React.createElement('span', {
+                                className: 'flex items-center'
+                              },
+                                React.createElement('span', {
+                                  className: 'mr-1'
+                                }, '👥'),
+                                `${shift.spots_taken || 0}/${shift.max_volunteers} Helfer`
+                              )
+                            )
+                          ),
+                          React.createElement('div', {
+                            className: 'flex items-center space-x-2'
+                          },
+                            React.createElement('div', {
+                              className: `inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                                shift['full?']
+                                  ? 'bg-red-100 text-red-700'
+                                  : 'bg-green-100 text-green-700'
+                              }`
+                            },
+                              shift['full?']
+                                ? '✕ Ausgebucht'
+                                : `✓ ${shift.spots_remaining} frei`
+                            ),
+                            // Registration Button (moved inline)
+                            shift['full?']
+                              ? null
+                              : showRegistrationForm === shift.id
+                                ? null // Form will be shown below
+                                : registrationStatus[shift.id] === 'error'
+                                  ? React.createElement('button', {
+                                      onClick: () => setShowRegistrationForm(shift.id),
+                                      className: 'bg-red-600 hover:bg-red-700 text-white button-styled font-semibold py-1 px-3 rounded text-xs transition-colors',
+                                      title: registrationErrors[shift.id] || 'Fehler bei der Anmeldung'
+                                    }, '❌ Erneut versuchen')
+                                  : React.createElement('button', {
+                                      onClick: () => setShowRegistrationForm(shift.id),
+                                      className: 'bg-jfc-green hover:bg-jfc-light-green text-white button-styled font-semibold py-1 px-3 rounded text-xs transition-colors'
+                                    }, 'Anmelden')
+                          )
+                        ),
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number *
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+                        // Registration Form (only shown when active)
+                        showRegistrationForm === shift.id && !shift['full?']
+                          ? React.createElement('div', {
+                              className: 'bg-jfc-light-gray p-3 rounded mt-2'
+                            },
+                              React.createElement('h4', {
+                                className: 'text-sm font-semibold text-jfc-navy mb-2'
+                              }, 'Anmeldung'),
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
+                              // Show error message if there was an error
+                              registrationErrors[shift.id] && React.createElement('div', {
+                                className: 'bg-red-50 border border-red-200 rounded p-2 mb-2'
+                              },
+                                React.createElement('div', {
+                                  className: 'flex items-start'
+                                },
+                                  React.createElement('span', {
+                                    className: 'text-red-500 mr-2 text-sm'
+                                  }, '⚠️'),
+                                  React.createElement('div', {
+                                    className: 'flex-1'
+                                  },
+                                    React.createElement('p', {
+                                      className: 'text-red-700 text-xs font-medium mb-1'
+                                    }, 'Fehler bei der Anmeldung:'),
+                                    React.createElement('p', {
+                                      className: 'text-red-600 text-xs'
+                                    }, registrationErrors[shift.id])
+                                  )
+                                )
+                              ),
 
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-              {submitting ? 'Registering...' : 'Register'}
-            </button>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+                              React.createElement('div', {
+                                className: 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2'
+                              },
+                                React.createElement('input', {
+                                  type: 'text',
+                                  value: volunteerInfo.name,
+                                  onChange: (e) => setVolunteerInfo(prev => ({ ...prev, name: e.target.value })),
+                                  className: 'w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-jfc-green focus:border-transparent',
+                                  placeholder: 'Name *',
+                                  required: true
+                                }),
+                                React.createElement('input', {
+                                  type: 'email',
+                                  value: volunteerInfo.email,
+                                  onChange: (e) => setVolunteerInfo(prev => ({ ...prev, email: e.target.value })),
+                                  className: 'w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-jfc-green focus:border-transparent',
+                                  placeholder: 'E-Mail *',
+                                  required: true
+                                })
+                              ),
+                              React.createElement('input', {
+                                type: 'tel',
+                                value: volunteerInfo.phone,
+                                onChange: (e) => setVolunteerInfo(prev => ({ ...prev, phone: e.target.value })),
+                                className: 'w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-jfc-green focus:border-transparent mb-2',
+                                placeholder: 'Telefon (optional)'
+                              }),
+                              React.createElement('div', {
+                                className: 'flex gap-2'
+                              },
+                                React.createElement('button', {
+                                  onClick: () => handleRegister(shift.id),
+                                  disabled: !volunteerInfo.name || !volunteerInfo.email || registrationStatus[shift.id] === 'loading',
+                                  className: 'bg-jfc-green hover:bg-jfc-light-green text-white button-styled font-semibold py-1 px-3 rounded text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                                },
+                                  registrationStatus[shift.id] === 'loading' ? 'Lädt...' : 'Bestätigen'
+                                ),
+                                React.createElement('button', {
+                                  onClick: () => {
+                                    setShowRegistrationForm(null);
+                                    setRegistrationErrors(prev => ({ ...prev, [shift.id]: null })); // Clear error when closing
+                                  },
+                                  className: 'bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-1 px-3 rounded text-xs transition-colors'
+                                }, 'Abbrechen')
+                              )
+                            )
+                          : null,
+
+                        // Show "ausgebucht" message if needed
+                        shift['full?']
+                          ? React.createElement('div', {
+                              className: 'text-center py-1 mt-2'
+                            },
+                              React.createElement('p', {
+                                className: 'text-gray-500 text-xs'
+                              }, 'Diese Schicht ist bereits ausgebucht.')
+                            )
+                          : null
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          : React.createElement('div', {
+              className: 'text-center py-16'
+            },
+              React.createElement('div', {
+                className: 'text-6xl mb-4'
+              }, '🚫'),
+              React.createElement('h3', {
+                className: 'text-2xl font-heading font-semibold text-jfc-navy mb-2'
+              }, 'Keine Schichten verfügbar'),
+              React.createElement('p', {
+                className: 'text-jfc-gray'
+              }, 'Für diese Veranstaltung sind momentan keine Helferschichten eingetragen.')
+            )
+      ),
+
+      // Success Dialog
+      showSuccessDialog && React.createElement('div', {
+        className: 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50',
+        onClick: () => setShowSuccessDialog(false)
+      },
+        React.createElement('div', {
+          className: 'bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-8 transform transition-all',
+          onClick: (e) => e.stopPropagation()
+        },
+          React.createElement('div', {
+            className: 'text-center'
+          },
+            React.createElement('div', {
+              className: 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6'
+            },
+              React.createElement('div', {
+                className: 'text-3xl'
+              }, '✅')
+            ),
+            React.createElement('h3', {
+              className: 'text-2xl font-heading font-semibold text-jfc-navy mb-4'
+            }, 'Vielen Dank für Ihre Anmeldung!'),
+            React.createElement('div', {
+              className: 'text-left bg-jfc-light-gray rounded-lg p-4 mb-6'
+            },
+              React.createElement('p', {
+                className: 'text-jfc-gray mb-2'
+              }, React.createElement('strong', { className: 'text-jfc-navy' }, 'Helfer: '), successDialogData.volunteerName),
+              React.createElement('p', {
+                className: 'text-jfc-gray mb-2'
+              }, React.createElement('strong', { className: 'text-jfc-navy' }, 'Veranstaltung: '), successDialogData.eventName),
+              React.createElement('p', {
+                className: 'text-jfc-gray mb-2'
+              }, React.createElement('strong', { className: 'text-jfc-navy' }, 'Schicht: '), successDialogData.shiftName),
+              React.createElement('p', {
+                className: 'text-jfc-gray'
+              }, React.createElement('strong', { className: 'text-jfc-navy' }, 'Zeit: '), successDialogData.shiftTime)
+            ),
+            React.createElement('p', {
+              className: 'text-jfc-gray mb-6 text-sm leading-relaxed'
+            }, 'Ihre Anmeldung wurde erfolgreich übermittelt. Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen wichtigen Informationen zu Ihrer Helferschicht.'),
+            React.createElement('div', {
+              className: 'flex gap-3'
+            },
+              React.createElement('button', {
+                onClick: () => setShowSuccessDialog(false),
+                className: 'flex-1 bg-jfc-green hover:bg-jfc-light-green text-white button-styled font-semibold py-3 px-6 rounded-lg transition-colors'
+              }, 'Perfekt!')
+            )
+          )
+        )
+      )
+    )
   );
 };
 

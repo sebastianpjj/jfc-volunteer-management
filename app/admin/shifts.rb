@@ -15,24 +15,24 @@ ActiveAdmin.register Shift do
     column "Duration" do |shift|
       "#{shift.duration_in_hours}h"
     end
-    column "Registrations" do |shift|
+    column "Registrations", sortable: false do |shift|
       count = shift.registrations.count
       max = shift.max_volunteers
       if count > 0
         if shift.full?
-          status_tag("#{count}/#{max} (FULL)", :error)
+          "#{count}/#{max} (FULL)"
         else
-          status_tag("#{count}/#{max} registered", :ok)
+          "#{count}/#{max} registered"
         end
       else
-        status_tag("0/#{max} (empty)", :empty)
+        "0/#{max} (empty)"
       end
     end
-    column "Deletion Status" do |shift|
+    column "Deletion Status", sortable: false do |shift|
       if shift.can_be_deleted?
-        status_tag("Can be deleted", :ok)
+        "Can be deleted"
       else
-        status_tag("Protected", :error)
+        "Protected"
       end
     end
     actions do |shift|
@@ -71,16 +71,16 @@ ActiveAdmin.register Shift do
       end
       row "Capacity Status" do |shift|
         if shift.full?
-          status_tag("FULL - No more registrations possible", :error)
+          "FULL - No more registrations possible"
         else
-          status_tag("#{shift.spots_remaining} spots remaining", :ok)
+          "#{shift.spots_remaining} spots remaining"
         end
       end
       row "Deletion Status" do |shift|
         if shift.can_be_deleted?
-          status_tag("This shift can be deleted", :ok)
+          "This shift can be deleted"
         else
-          status_tag(shift.deletion_blocked_message, :error)
+          shift.deletion_blocked_message
         end
       end
     end

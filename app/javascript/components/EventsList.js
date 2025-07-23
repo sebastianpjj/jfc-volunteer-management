@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const EventsList = () => {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [events, setEvents] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
+    console.log('🏈 EventsList component mounted, fetching events...');
     fetchEvents();
   }, []);
 
@@ -13,115 +14,142 @@ const EventsList = () => {
     try {
       const response = await fetch('/api/events');
       if (!response.ok) {
-        throw new Error('Failed to fetch events');
+        throw new Error('Fehler beim Laden der Veranstaltungen');
       }
       const data = await response.json();
+      console.log('📊 Events data loaded:', data);
       setEvents(data);
     } catch (err) {
+      console.error('❌ Error fetching events:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="text-center p-4">Loading events...</div>;
-  if (error) return <div className="text-center p-4 text-red-600">Error: {error}</div>;
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Football Club - Volunteer Opportunities</h1>
-
-      {events.length === 0 ? (
-        <div className="text-center text-gray-600">No events available at the moment.</div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {events.map(event => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const EventCard = ({ event }) => {
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
+    return new Date(dateString).toLocaleDateString('de-DE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
   };
 
-  const formatTimeRange = (startDate, endDate) => {
-    if (!startDate || !endDate) return '';
+  if (loading) {
+    return (
+      React.createElement('div', {
+        className: 'flex justify-center items-center py-16'
+      },
+        React.createElement('div', {
+          className: 'text-center'
+        },
+          React.createElement('div', {
+            className: 'animate-spin rounded-full h-12 w-12 border-b-2 border-jfc-green mx-auto mb-4'
+          }),
+          React.createElement('p', {
+            className: 'text-jfc-gray font-semibold'
+          }, 'Veranstaltungen werden geladen...')
+        )
+      )
+    );
+  }
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const startTime = start.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const endTime = end.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    return `${startTime} - ${endTime}`;
-  };
+  if (error) {
+    return (
+      React.createElement('div', {
+        className: 'max-w-4xl mx-auto p-6'
+      },
+        React.createElement('div', {
+          className: 'bg-red-50 border border-red-200 rounded-lg p-6 text-center'
+        },
+          React.createElement('div', {
+            className: 'text-red-600 text-lg font-semibold mb-2'
+          }, '⚠️ Fehler'),
+          React.createElement('p', {
+            className: 'text-red-700'
+          }, error)
+        )
+      )
+    );
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <h2 className="text-xl font-semibold mb-2">{event.name}</h2>
-      <p className="text-gray-600 mb-4">{formatDate(event.date)}</p>
+    React.createElement('div', {
+      className: 'max-w-6xl mx-auto p-6'
+    },
+      React.createElement('div', {
+        className: 'mb-8'
+      },
+        React.createElement('h2', {
+          className: 'text-4xl font-heading font-semibold text-jfc-navy mb-2'
+        }, 'Veranstaltungsübersicht'),
+        React.createElement('p', {
+          className: 'text-lg text-jfc-gray mb-6'
+        }, 'Melde dich als helfende Hand für unsere Vereinsveranstaltungen an'),
+        React.createElement('div', {
+          className: 'h-1 w-20 bg-gradient-to-r from-jfc-green to-jfc-light-green rounded'
+        })
+      ),
 
-      <div className="mb-4">
-        <h3 className="font-medium mb-2">Available Shifts:</h3>
-        {event.shifts && event.shifts.length > 0 ? (
-          <ul className="space-y-1">
-            {event.shifts.slice(0, 3).map(shift => (
-              <li key={shift.id} className="text-sm text-gray-700">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="font-medium">{shift.name} ({shift.group_name})</div>
-                    <div className="text-xs text-gray-500">
-                      {formatTimeRange(shift.start_date, shift.end_date)}
-                      {shift.duration_in_hours && ` • ${shift.duration_in_hours}h`}
-                    </div>
-                  </div>
-                  <div className="text-xs ml-2">
-                    {shift.full ? (
-                      <span className="bg-red-100 text-red-800 px-2 py-1 rounded">FULL</span>
-                    ) : (
-                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-                        {shift.spots_remaining} spots left
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </li>
-            ))}
-            {event.shifts.length > 3 && (
-              <li className="text-sm text-gray-500">
-                +{event.shifts.length - 3} more shifts
-              </li>
-            )}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-500">No shifts available</p>
-        )}
-      </div>
-
-      <a
-        href={`/events/${event.id}`}
-        className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-      >
-        View Details & Register
-      </a>
-    </div>
+      events.length === 0
+        ? React.createElement('div', {
+            className: 'text-center py-16'
+          },
+            React.createElement('div', {
+              className: 'text-6xl mb-4'
+            }, '📅'),
+            React.createElement('h3', {
+              className: 'text-2xl font-heading font-semibold text-jfc-navy mb-2'
+            }, 'Keine Veranstaltungen verfügbar'),
+            React.createElement('p', {
+              className: 'text-jfc-gray'
+            }, 'Aktuell sind keine Veranstaltungen geplant, die Hilfe benötigen.')
+          )
+        : React.createElement('div', {
+            className: 'bg-white rounded-lg shadow-lg overflow-hidden'
+          },
+          events.map((event, index) =>
+            React.createElement('div', {
+              key: event.id,
+              className: `flex items-center justify-between p-6 hover:bg-jfc-light-gray transition-colors duration-200 ${
+                index !== events.length - 1 ? 'border-b border-gray-200' : ''
+              }`
+            },
+              React.createElement('div', {
+                className: 'flex items-center space-x-4'
+              },
+                React.createElement('div', {
+                  className: 'w-12 h-12 bg-gradient-to-r from-jfc-green to-jfc-light-green rounded-full flex items-center justify-center text-white font-semibold'
+                }, event.name.charAt(0).toUpperCase()),
+                React.createElement('div', null,
+                  React.createElement('h3', {
+                    className: 'text-lg font-heading font-semibold text-jfc-navy mb-1'
+                  }, event.name),
+                  React.createElement('p', {
+                    className: 'text-jfc-gray text-sm'
+                  }, `📅 ${formatDate(event.date)}`),
+                  React.createElement('p', {
+                    className: 'text-jfc-green text-sm font-medium mt-1'
+                  }, `${event.spots_remaining || 0} Helfer gesucht`)
+                )
+              ),
+              React.createElement('div', {
+                className: 'flex items-center space-x-3'
+              },
+                React.createElement('a', {
+                  href: `/events/${event.id}`,
+                  className: 'bg-jfc-green hover:bg-jfc-light-green text-white button-styled font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center group'
+                },
+                  'Details anzeigen',
+                  React.createElement('span', {
+                    className: 'ml-2 group-hover:translate-x-1 transition-transform duration-200'
+                  }, '→')
+                )
+              )
+            )
+          )
+        )
+    )
   );
 };
 

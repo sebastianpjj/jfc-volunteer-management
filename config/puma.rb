@@ -30,6 +30,39 @@ threads threads_count, threads_count
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 
+# Specifies the `environment` that Puma will run in.
+environment ENV.fetch("RAILS_ENV") { "development" }
+
+# Production-specific configuration
+unless ENV.fetch("RAILS_ENV") { "development" } == "development"
+  # Use unix socket in production
+  bind "unix://#{ENV.fetch("PUMA_SOCKET_PATH", "/var/www/jfc_hands/shared/tmp/sockets/puma.sock")}"
+
+  # Logging
+  stdout_redirect "/var/www/jfc_hands/shared/log/puma.log", "/var/www/jfc_hands/shared/log/puma.log", true
+
+  # Set master PID file location
+  pidfile "/var/www/jfc_hands/shared/tmp/pids/puma.pid"
+  state_path "/var/www/jfc_hands/shared/tmp/pids/puma.state"
+
+  # Allow restarts
+  activate_control_app
+
+  # Workers for production
+  workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+
+  # Preload application for better memory usage
+  preload_app!
+
+  # Before forking workers
+  before_fork do
+    ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+  end
+
+  # Worker timeout
+  worker_timeout 3600 if ENV.fetch("RAILS_ENV", "development") == "development"
+end
+
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 

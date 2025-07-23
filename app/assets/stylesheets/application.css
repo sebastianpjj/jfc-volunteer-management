@@ -13,3 +13,70 @@
  *= require_tree .
  *= require_self
  */
+
+/* JFC Eintracht Feldberg Custom Styles */
+
+/* Headings on green backgrounds should be light colored */
+.heading-on-green {
+  color: #ffffff !important;
+}
+
+/* Ensure headings on green backgrounds stay light even with other classes */
+.bg-jfc-green .heading-on-green,
+.bg-gradient-to-r .heading-on-green {
+  color: #ffffff !important;
+}
+
+/* Light buttons and links on green backgrounds */
+.light-button,
+.light-button:link,
+.light-button:visited,
+.light-button:hover,
+.light-button:active {
+  color: #e5e7eb !important; /* light gray */
+  text-decoration: none !important;
+  text-shadow: none !important;
+}
+
+.light-button:hover {
+  color: #ffffff !important; /* white on hover for better contrast */
+  text-shadow: none !important;
+}
+
+/* Button styling that overrides default link styles */
+.button-styled,
+.button-styled:link,
+.button-styled:visited,
+.button-styled:hover,
+.button-styled:active {
+  text-decoration: none !important;
+  text-shadow: none !important;
+}
+
+/* Ensure proper colors are applied to styled buttons */
+.bg-jfc-green .button-styled,
+.bg-jfc-green .button-styled:link,
+.bg-jfc-green .button-styled:visited {
+  color: #ffffff !important;
+}
+
+.text-white.button-styled,
+.text-white.button-styled:link,
+.text-white.button-styled:visited {
+  color: #ffffff !important;
+}
+
+/* Ensure buttons and links on green backgrounds are properly styled */
+.bg-jfc-green .light-button,
+.bg-jfc-green .light-button:link,
+.bg-jfc-green .light-button:visited,
+.bg-gradient-to-r .light-button,
+.bg-gradient-to-r .light-button:link,
+.bg-gradient-to-r .light-button:visited {
+  color: #e5e7eb !important; /* light gray */
+}
+
+.bg-jfc-green .light-button:hover,
+.bg-gradient-to-r .light-button:hover {
+  color: #ffffff !important; /* white on hover */
+}

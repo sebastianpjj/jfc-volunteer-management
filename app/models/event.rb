@@ -23,6 +23,10 @@ class Event < ApplicationRecord
     end
   end
 
+  def spots_remaining
+    return self.capacity_remaining
+  end
+
   def total_capacity
     shifts.sum(:max_volunteers)
   end

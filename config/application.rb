@@ -21,7 +21,12 @@ module JfcHands
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    # Set timezone to Berlin/Germany (Central European Time)
+    config.time_zone = "Berlin"
+
+    # Make Active Record use the application time zone instead of UTC
+    config.active_record.default_timezone = :local
+
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

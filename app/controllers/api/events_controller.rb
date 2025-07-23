@@ -4,10 +4,11 @@ class Api::EventsController < ApplicationController
   def index
     @events = Event.includes(:shifts).order(:date)
     render json: @events.as_json(
+      methods: :spots_remaining,
       include: {
         shifts: {
           include: :registrations,
-          methods: [:available_spots, :spots_remaining, :spots_taken, :full?, :duration_in_hours, :time_range]
+          methods: [:spots_remaining, :spots_taken, :full?, :duration_in_hours, :time_range]
         }
       }
     )

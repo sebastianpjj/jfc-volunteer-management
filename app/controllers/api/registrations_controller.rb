@@ -15,6 +15,9 @@ class Api::RegistrationsController < ApplicationController
     @registration = Registration.new(registration_params)
 
     if @registration.save
+      # Send confirmation email
+      RegistrationMailer.confirmation(@registration).deliver_now
+
       render json: @registration.as_json(
         include: {
           shift: {

@@ -3,7 +3,7 @@ class Registration < ApplicationRecord
 
   validates :name, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :phone, presence: true
+  # validates :phone, presence: true
 
   # Ransack configuration for ActiveAdmin search
   def self.ransackable_attributes(auth_object = nil)

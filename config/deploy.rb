@@ -1,5 +1,10 @@
-# config valid for current version and patch releases of Capistrano
+# config valid for current version and releases of Capistrano
 lock "~> 3.19.2"
+
+# RVM settings
+set :rvm_type, :system
+set :rvm_ruby_version, '3.4.2'
+set :rvm_custom_path, '/usr/share/rvm'
 
 set :application, "jfc_hands"
 set :repo_url, "git@github.com:sebastianpjj/jfc-volunteer-management.git"
@@ -37,11 +42,6 @@ set :keep_releases, 5
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
-# RVM settings
-set :rvm_type, :system
-set :rvm_ruby_version, '3.1.4'
-set :rvm_custom_path, '/usr/share/rvm'
-
 # bundler settings
 set :bundle_flags, '--deployment --without development test'
 set :bundle_path, -> { shared_path.join('vendor/bundle') }
@@ -77,7 +77,7 @@ namespace :deploy do
     invoke 'deploy'
   end
 
-  before :starting, :check_revision
+  # before :starting, :check_revision
   after  :finishing, :compile_assets
   after  :finishing, :cleanup
   after  :finishing, 'passenger:restart'

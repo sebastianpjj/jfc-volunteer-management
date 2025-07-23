@@ -58,16 +58,20 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options  = { host: 'helfer.eintracht-feldberg.net/', protocol: :https }
+  config.action_mailer.asset_host           = 'https://helfer.eintracht-feldberg.net/'
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.azurecomm.net',
+    domain:               ENV['SMTP_AZURE_SERVICE_DOMAIN'],
+    # Username is <Azure Communication Services Resource name>.<Entra Application ID>.< Entra Tenant ID>
+    user_name:            ENV['SMTP_AZURE_SERVICE_USERNAME'],
+    password:             ENV['SMTP_AZURE_SERVICE_PW'],
+    authentication:       :login,
+    enable_starttls_auto: true,
+    port:                 587
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -80,10 +84,11 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
+  config.hosts = [
+    "helfer.eintracht-feldberg.net",     # Allow requests from example.com
+    # "example.com",     # Allow requests from example.com
+    # /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
+  ]
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }

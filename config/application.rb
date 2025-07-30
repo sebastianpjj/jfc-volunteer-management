@@ -11,7 +11,10 @@ module JfcHands
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
-    config.importmap.cache_sweepers << Engine.root.join("app/assets/javascripts")
+    # importmap configuration
+    # This is where we configure importmap to cache our JavaScript files.
+    # It allows us to use modern JavaScript features without needing a bundler.
+    config.importmap.cache_sweepers << Rails.root.join("app/assets/javascripts")
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

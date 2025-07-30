@@ -1,7 +1,7 @@
 <% content_for :title, @event.name %>
 
 <% content_for :javascript do %>
-  <script type="module">import "react_components"</script>
+  <%= javascript_import_module_tag "react_components" %>
 <% end %>
 
 <div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

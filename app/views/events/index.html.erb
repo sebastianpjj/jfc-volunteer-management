@@ -1,5 +1,5 @@
 <% content_for :javascript do %>
-  <script type="module">import "react_components"</script>
+  <%= javascript_import_module_tag "react_components" %>
 <% end %>
 
 <div id="events-list-react"></div>

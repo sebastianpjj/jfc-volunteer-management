@@ -1,7 +1,22 @@
 <% content_for :title, @event.name %>
 
 <% content_for :javascript do %>
-  <%= javascript_import_module_tag "react_components" %>
+  <!-- Force cache busting with aggressive cache-busting headers -->
+  <script type="module">
+    // Cache busting import with timestamp
+    const cacheBuster = '<%= Rails.application.config.assets.version || Time.current.to_i %>';
+    console.log('🚀 Loading react_components with cache buster:', cacheBuster);
+    
+    import('/assets/react_components.js?v=' + cacheBuster + '&t=' + Date.now())
+      .then(() => {
+        console.log('✅ react_components loaded successfully with cache busting');
+      })
+      .catch(error => {
+        console.error('❌ Failed to load react_components:', error);
+        // Fallback to regular import
+        return import('/assets/react_components.js');
+      });
+  </script>
 <% end %>
 
 <div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

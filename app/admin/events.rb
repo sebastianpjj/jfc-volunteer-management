@@ -1,5 +1,5 @@
 ActiveAdmin.register Event do
-  permit_params :name, :date, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
+  permit_params :name, :date, :shifts_header, :shifts_subtext, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
 
   filter :name
   filter :date
@@ -26,6 +26,8 @@ ActiveAdmin.register Event do
     attributes_table do
       row :name
       row :date
+      row :shifts_header, label: "Shifts Section Header"
+      row :shifts_subtext, label: "Shifts Section Subtext"
       row "Capacity Overview" do |event|
         capacity = event.total_capacity
         taken = event.capacity_taken
@@ -95,6 +97,16 @@ ActiveAdmin.register Event do
                 step: 900  # 15 minute intervals
               },
               hint: "Datum und Uhrzeit in lokaler Zeit (Berlin)"
+    end
+
+    f.inputs "Shifts Section Customization" do
+      f.input :shifts_header,
+              label: "Shifts Section Header",
+              hint: "The main heading for the shifts section (default: 'Verfügbare Schichten')"
+      f.input :shifts_subtext,
+              as: :text,
+              label: "Shifts Section Subtext",
+              hint: "Explanatory text below the header to guide volunteers"
     end
 
     f.inputs "Shifts" do

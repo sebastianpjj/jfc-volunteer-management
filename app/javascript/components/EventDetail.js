@@ -271,9 +271,17 @@ const EventDetail = ({ eventId }) => {
       React.createElement('div', {
         className: 'grid gap-6'
       },
-        React.createElement('h2', {
-          className: 'text-3xl font-heading font-semibold text-jfc-navy mb-6 mt-8'
-        }, 'Verfügbare Schichten'),
+        React.createElement('div', {
+          className: 'mb-6'
+        },
+          React.createElement('h2', {
+            className: 'text-3xl font-heading font-semibold text-jfc-navy mb-3 mt-8'
+          }, event.shifts_header || 'Verfügbare Schichten'),
+
+          event.shifts_subtext && React.createElement('p', {
+            className: 'text-lg text-gray-600 mb-4'
+          }, event.shifts_subtext)
+        ),
 
         event.shifts && event.shifts.length > 0
           ? Object.entries(groupShiftsByGroupName(event.shifts)).map(([combinedKey, groupData]) =>
@@ -461,7 +469,7 @@ const EventDetail = ({ eventId }) => {
                             },
                               React.createElement('p', {
                                 className: 'text-gray-500 text-xs'
-                              }, 'Diese Schicht ist bereits ausgebucht.')
+                              }, 'Alle Plätze sind belegt.')
                             )
                           : null
                       )

@@ -58,6 +58,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # SQLite3 for development database (Rails 8 compatible version)
+  gem "sqlite3", ">= 2.1"
 end
 
 group :development do

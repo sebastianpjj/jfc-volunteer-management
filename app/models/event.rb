@@ -46,7 +46,7 @@ class Event < ApplicationRecord
 
   # Ransack configuration for ActiveAdmin search
   def self.ransackable_attributes(auth_object = nil)
-    ["name", "date", "created_at", "updated_at", "id"]
+    ["name", "date", "shifts_header", "shifts_subtext", "created_at", "updated_at", "id"]
   end
 
   def self.ransackable_associations(auth_object = nil)

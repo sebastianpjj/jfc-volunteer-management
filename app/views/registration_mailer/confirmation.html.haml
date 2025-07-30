@@ -68,7 +68,7 @@
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Datum:
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @event.date.strftime('%A, %d. %B %Y')
                                                         %tr
-                                                          %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Schicht:
+                                                          %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Dienst:
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @shift.name
                                                         %tr
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Bereich:
@@ -76,9 +76,6 @@
                                                         %tr
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Zeit:
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @shift.time_range
-                                                        %tr
-                                                          %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Dauer:
-                                                          %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= "#{@shift.duration_in_hours} Stunden"
                                                         %tr
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Name:
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @registration.name
@@ -98,6 +95,8 @@
                                                         Bei Fragen erreichst du uns unter:
                                                         %br
                                                         %strong Tel: 0173-6630991
+                                                        %br
+                                                        %strong email: patric.wonsack@googlemail.com
 
 
                                                 %tr

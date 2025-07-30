@@ -17,6 +17,7 @@ class Api::EventsController < ApplicationController
   def show
     @event = Event.includes(shifts: :registrations).find(params[:id])
     render json: @event.as_json(
+      only: [:id, :name, :date, :shifts_header, :shifts_subtext, :created_at, :updated_at],
       include: {
         shifts: {
           include: :registrations,

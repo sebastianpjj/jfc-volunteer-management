@@ -4,4 +4,6 @@
 //= link react_components.js
 //= link controllers/application.js
 //= link controllers/index.js
+//= link components/EventDetail.js
+//= link components/EventsList.js
 //= link active_admin.scss

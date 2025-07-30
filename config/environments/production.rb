@@ -16,7 +16,13 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
 
   # Cache assets for far-future expiry since they are all digest stamped.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
+  config.public_file_server.headers = { 
+    "cache-control" => "public, max-age=#{1.year.to_i}",
+    "vary" => "Accept-Encoding"
+  }
+
+  # Configure importmap cache control for JavaScript modules
+  config.importmap.cache_control = "public, max-age=31536000, immutable"
 
   # Only precompile assets that are explicitly declared in manifest.js
   # This prevents Sprockets from trying to precompile JavaScript files that should be handled by importmaps

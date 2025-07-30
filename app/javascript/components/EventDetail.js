@@ -1,5 +1,7 @@
 import React from 'react';
 
+// Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support
+
 const EventDetail = ({ eventId }) => {
   const [event, setEvent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);

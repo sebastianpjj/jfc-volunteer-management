@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  # Importmap routes for JavaScript modules
+  mount Importmap::Engine, at: "/importmap"
+
   # Public event pages for volunteers
   resources :events, only: [:index, :show]
 

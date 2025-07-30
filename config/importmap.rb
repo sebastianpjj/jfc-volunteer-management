@@ -16,4 +16,5 @@ pin "react-dom/client", to: "https://ga.jspm.io/npm:react-dom@18.2.0/client.js"
 # Use Rails.application.config.assets.version or timestamp for cache busting
 cache_buster = defined?(Rails) && Rails.application&.config&.assets&.version || Time.current.to_i.to_s
 pin "react_components", to: "react_components.js?v=#{cache_buster}"
-pin_all_from "app/javascript/components", under: "components", to: "components"
+# Temporarily disable individual component pinning to test cache issues
+# pin_all_from "app/javascript/components", under: "components", to: "components"

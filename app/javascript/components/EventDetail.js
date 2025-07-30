@@ -1,7 +1,6 @@
 import React from 'react';
 
 // Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support
-console.log('🚀 EventDetail component loaded with shifts_header support - v2025-07-30-v3');
 
 const EventDetail = ({ eventId }) => {
   const [event, setEvent] = React.useState(null);
@@ -283,7 +282,7 @@ const EventDetail = ({ eventId }) => {
 
           event.shifts_subtext && React.createElement('p', {
             className: 'text-lg text-gray-600 mb-4'
-          }, event.shifts_subtext)
+          }, event.shifts_subtext || '')
         ),
 
         event.shifts && event.shifts.length > 0

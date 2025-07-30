@@ -8,15 +8,22 @@
     console.log('🚀 Loading react_components with cache buster:', cacheBuster);
 
     import('/assets/react_components.js?v=' + cacheBuster + '&t=' + Date.now())
-      .then(() => {
+      .then((module) => {
         console.log('✅ react_components loaded successfully with cache busting');
+        // Initialize the React components
+        if (module.initializeReactComponents) {
+          module.initializeReactComponents();
+          console.log('🎯 React components initialized');
+        }
       })
       .catch(error => {
         console.error('❌ Failed to load react_components:', error);
         // Fallback to regular import
-        return import('/assets/react_components.js');
+        return import('/assets/react_components.js').then((module) => {
+          if (module.initializeReactComponents) {
+            module.initializeReactComponents();
+          }
+        });
       });
   </script>
-<% end %>
-
-<div id="event-detail-react" data-event-id="<%= @event.id %>"></div>
+<% end %><div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

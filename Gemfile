@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.1"
+# Using Rails 7.2 for stable importmap and asset pipeline behavior
+gem "rails", "~> 7.2.0"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 # gem "propshaft"
 # Use mysql2 as the database for Active Record

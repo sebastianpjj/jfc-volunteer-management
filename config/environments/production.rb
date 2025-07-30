@@ -4,7 +4,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.enable_reloading = false
+  config.cache_classes = true
 
   # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
@@ -23,13 +23,6 @@ Rails.application.configure do
 
   # Configure importmap cache control for JavaScript modules
   config.importmap.cache_control = "public, max-age=31536000, immutable"
-
-  # Only precompile assets that are explicitly declared in manifest.js
-  # This prevents Sprockets from trying to precompile JavaScript files that should be handled by importmaps
-  config.assets.precompile = [
-    'application.css',
-    'active_admin.scss'
-  ]
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"

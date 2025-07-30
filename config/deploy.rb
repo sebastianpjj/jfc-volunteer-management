@@ -72,12 +72,25 @@ namespace :deploy do
     end
   end
 
+  desc 'Clear importmap cache'
+  task :clear_importmap_cache do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'tmp:clear'
+          execute :touch, 'tmp/restart.txt'
+        end
+      end
+    end
+  end
+
   desc 'Initial Deploy'
   task :initial do
     invoke 'deploy'
   end
 
   # before :starting, :check_revision
-  after  :finishing, :cleanup  
+  after  :finishing, :cleanup
+  after  :finishing, :clear_importmap_cache
   after  :finishing, 'passenger:restart'
 end

@@ -278,7 +278,7 @@ const EventDetail = ({ eventId }) => {
         },
           React.createElement('h2', {
             className: 'text-3xl font-heading font-semibold text-jfc-navy mb-3 mt-8'
-          }, event.shifts_header || 'Verfügbare Schichtennnn'),
+          }, event.shifts_header || 'Verfügbare Schichten'),
 
           event.shifts_subtext && React.createElement('p', {
             className: 'text-lg text-gray-600 mb-4'

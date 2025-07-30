@@ -1,42 +1,44 @@
 <% content_for :javascript do %>
-  <!-- Ultra-aggressive cache busting with timestamp and random values -->
+  <!-- Use importmap for proper module loading with cache busting -->
   <script type="module">
-    // Cache busting import with multiple strategies
-    const deploymentVersion = '<%= Rails.application.config.assets.version || "default" %>';
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(7);
-    const cacheBuster = `${deploymentVersion}_${timestamp}_${random}`;
+    console.log('🚀 Loading react_components through importmap with cache busting');
     
-    console.log('🚀 Loading react_components with ultra cache buster:', cacheBuster);
-
-    // Try multiple paths to bypass cache
-    const importPaths = [
-      `/assets/react_components.js?v=${cacheBuster}&bust=true`,
-      `/assets/react_components.js?cache_bust=${cacheBuster}`,
-      `/assets/react_components.js?version=${deploymentVersion}&t=${timestamp}&r=${random}`
-    ];
-
-    async function loadWithFallback() {
-      for (let i = 0; i < importPaths.length; i++) {
-        try {
-          console.log(`🔄 Trying import path ${i + 1}:`, importPaths[i]);
-          const module = await import(importPaths[i]);
-          console.log('✅ react_components loaded successfully with path:', importPaths[i]);
-          
-          if (module.initializeReactComponents) {
-            module.initializeReactComponents();
-            console.log('🎯 React components initialized');
-          }
-          return; // Success, exit function
-        } catch (error) {
-          console.warn(`❌ Failed to load with path ${i + 1}:`, error);
-          if (i === importPaths.length - 1) {
-            console.error('❌ All import paths failed');
-          }
+    // Force cache busting by adding random parameter to importmap URL
+    const cacheBuster = Date.now() + '_' + Math.random().toString(36).substring(7);
+    console.log('Cache buster value:', cacheBuster);
+    
+    // Use importmap to get the correct path, then add cache busting
+    const importMap = JSON.parse(document.querySelector('script[type="importmap"]').textContent);
+    const reactComponentsPath = importMap.imports['react_components'];
+    const cacheBustedPath = reactComponentsPath + '&cb=' + cacheBuster;
+    
+    console.log('Original path:', reactComponentsPath);
+    console.log('Cache busted path:', cacheBustedPath);
+    
+    try {
+      const module = await import(cacheBustedPath);
+      console.log('✅ react_components loaded successfully');
+      
+      if (module.initializeReactComponents) {
+        module.initializeReactComponents();
+        console.log('🎯 React components initialized');
+      } else {
+        console.error('❌ initializeReactComponents function not found');
+      }
+    } catch (error) {
+      console.error('❌ Failed to load react_components:', error);
+      
+      // Fallback: try the original path
+      try {
+        console.log('🔄 Trying fallback without cache busting');
+        const fallbackModule = await import(reactComponentsPath);
+        if (fallbackModule.initializeReactComponents) {
+          fallbackModule.initializeReactComponents();
+          console.log('🎯 React components initialized via fallback');
         }
+      } catch (fallbackError) {
+        console.error('❌ Fallback also failed:', fallbackError);
       }
     }
-
-    loadWithFallback();
   </script>
 <% end %><div id="events-list-react"></div>

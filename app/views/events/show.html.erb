@@ -1,4 +1,6 @@
-<%<% content_for :javascript do %>
+<% content_for :title, @event.name %>
+
+<% content_for :javascript do %>
   <script type="module">
     import { initializeReactComponents } from 'react_components';
     
@@ -14,25 +16,6 @@
       initializeReactComponents();
     });
   </script>
-<% end %> @event.name %>
+<% end %>
 
-<% content_for :javascript do %>
-    <!-- Use importmap for proper module loading -->
-  <script type="module">
-    console.log('🚀 Loading react_components through importmap');
-    
-    try {
-      const module = await import('react_components');
-      console.log('✅ react_components loaded successfully');
-      
-      if (module.initializeReactComponents) {
-        module.initializeReactComponents();
-        console.log('🎯 React components initialized');
-      } else {
-        console.error('❌ initializeReactComponents function not found');
-      }
-    } catch (error) {
-      console.error('❌ Failed to load react_components:', error);
-    }
-  </script>
-<% end %><div id="event-detail-react" data-event-id="<%= @event.id %>"></div>
+<div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

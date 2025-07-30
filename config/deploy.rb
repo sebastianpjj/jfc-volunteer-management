@@ -82,7 +82,7 @@ namespace :deploy do
   task :update_asset_version do
     on roles(:app) do
       within current_path do
-        execute "mkdir -p tmp && echo '#{fetch(:current_revision_time)}' > tmp/asset_version.txt"
+        execute "echo '#{fetch(:current_revision_time)}' > #{shared_path}/tmp/asset_version.txt"
       end
     end
   end

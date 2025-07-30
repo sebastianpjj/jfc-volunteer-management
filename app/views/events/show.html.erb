@@ -1,115 +1,20 @@
 <% content_for :title, @event.name %>
 
-<% content_for :javascript do %>
-  <!-- React CDN -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <script>
-    const { useState, useEffect, createElement: h } = React;
-    const { createRoot } = ReactDOM;
+<div id="event-detail-react" data-event-id="<%= @event.id %>"></div>
+
+<%= content_for :javascript do %>
+  <script type="module">
+    import { createRoot } from "react-dom/client";
+    import React from "react";
+    import EventDetailComponent from "components/EventDetailComponent";
     
-    // EventDetailComponent
-    function EventDetailComponent({ eventId }) {
-      const [eventData, setEventData] = useState(null);
-      const [isLoading, setIsLoading] = useState(true);
-      const [error, setError] = useState(null);
-
-      useEffect(() => {
-        const fetchEventData = async () => {
-          try {
-            const response = await fetch(`/api/events/${eventId}`);
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setEventData(data);
-          } catch (err) {
-            console.error('Error fetching event data:', err);
-            setError(err.message);
-          } finally {
-            setIsLoading(false);
-          }
-        };
-
-        fetchEventData();
-      }, [eventId]);
-
-      if (isLoading) {
-        return h('div', { className: 'text-center p-4' }, 
-          h('div', { className: 'spinner-border text-primary', role: 'status' },
-            h('span', { className: 'visually-hidden' }, 'Lade...')
-          )
-        );
-      }
-
-      if (error) {
-        return h('div', { className: 'alert alert-danger' }, 
-          `Fehler beim Laden der Event-Daten: ${error}`
-        );
-      }
-
-      if (!eventData) {
-        return h('div', { className: 'alert alert-warning' }, 
-          'Keine Event-Daten gefunden.'
-        );
-      }
-
-      return h('div', { className: 'event-detail-container' },
-        h('div', { className: 'row mb-4' },
-          h('div', { className: 'col-12' },
-            h('h2', { className: 'mb-3' }, eventData.shifts_header || 'Verfügbare Schichten'),
-            eventData.shifts_subtext && h('p', { className: 'text-muted mb-4' }, eventData.shifts_subtext)
-          )
-        ),
-        h('div', { className: 'row' },
-          h('div', { className: 'col-12' },
-            h('div', { className: 'shifts-grid' },
-              eventData.shifts && eventData.shifts.map(shift => 
-                h('div', { key: shift.id, className: 'shift-card card mb-3' },
-                  h('div', { className: 'card-body' },
-                    h('h5', { className: 'card-title' }, shift.name),
-                    h('p', { className: 'card-text' }, shift.description),
-                    h('div', { className: 'shift-meta' },
-                      h('small', { className: 'text-muted' },
-                        `Benötigt: ${shift.required_people} | Angemeldet: ${shift.current_registrations || 0}`
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      );
-    }
-    
-    function initializeReactComponents() {
-      console.log('🚀 Initializing React components with CDN...');
-      
-      // Initialize EventDetailComponent
+    document.addEventListener("DOMContentLoaded", function() {
       const eventDetailContainer = document.getElementById('event-detail-react');
       if (eventDetailContainer) {
         const eventId = parseInt(eventDetailContainer.dataset.eventId);
-        console.log('Found event detail container for event:', eventId);
-        
         const root = createRoot(eventDetailContainer);
-        root.render(h(EventDetailComponent, { eventId }));
+        root.render(React.createElement(EventDetailComponent, { eventId }));
       }
-    }
-    
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 DOM loaded - initializing React components...');
-      initializeReactComponents();
-    });
-    
-    // Also initialize on Turbo navigation
-    document.addEventListener('turbo:load', () => {
-      console.log('🔄 Turbo load - initializing React components...');
-      initializeReactComponents();
     });
   </script>
 <% end %>
-
-<div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

@@ -77,8 +77,18 @@ namespace :deploy do
     invoke 'deploy'
   end
 
+  # Custom task to update asset version file after deployment
+  desc 'Update asset version for cache busting'
+  task :update_asset_version do
+    on roles(:app) do
+      within current_path do
+        execute "echo '#{fetch(:current_revision_time)}' > tmp/asset_version.txt"
+      end
+    end
+  end
+
   # before :starting, :check_revision
-  after  :finishing, :compile_assets
-  after  :finishing, :cleanup
+  after  :finishing, :update_asset_version
+  after  :finishing, :cleanup  
   after  :finishing, 'passenger:restart'
 end

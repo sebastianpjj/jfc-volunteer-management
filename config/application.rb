@@ -28,7 +28,13 @@ module JfcHands
     config.active_record.default_timezone = :local
 
     # Force asset cache busting on each deployment
-    config.assets.version = Time.now.to_i.to_s
+    # Read deployment timestamp from file created during deployment
+    asset_version_file = Rails.root.join('tmp', 'asset_version.txt')
+    if File.exist?(asset_version_file)
+      config.assets.version = File.read(asset_version_file).strip
+    else
+      config.assets.version = Time.now.to_i.to_s
+    end
 
     # config.eager_load_paths << Rails.root.join("extras")
 

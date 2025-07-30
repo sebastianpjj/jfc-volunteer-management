@@ -27,6 +27,9 @@ module JfcHands
     # Make Active Record use the application time zone instead of UTC
     config.active_record.default_timezone = :local
 
+    # Force asset cache busting on each deployment
+    config.assets.version = Time.now.to_i.to_s
+
     # config.eager_load_paths << Rails.root.join("extras")
 
     # Set a unique assets version for cache busting

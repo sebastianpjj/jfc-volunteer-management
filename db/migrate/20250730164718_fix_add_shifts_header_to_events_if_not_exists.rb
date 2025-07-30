@@ -1,11 +1,11 @@
 class FixAddShiftsHeaderToEventsIfNotExists < ActiveRecord::Migration[8.0]
   def change
     unless column_exists?(:events, :shifts_header)
-      add_column :events, :shifts_header, :string, default: "Verfügbare Schichten"
+      add_column :events, :shifts_header, :string, default: "Verfügbare Dienste"
     end
-    
+
     unless column_exists?(:events, :shifts_subtext)
-      add_column :events, :shifts_subtext, :text, default: "Bitte wählen Sie eine Schicht aus, für die Sie sich als freiwilliger Helfer anmelden möchten."
+      add_column :events, :shifts_subtext, :text
     end
   end
 end

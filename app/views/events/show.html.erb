@@ -1,24 +1,12 @@
 <% content_for :title, @event.name %>
 
 <% content_for :javascript do %>
-  <!-- Use importmap for proper module loading with cache busting -->
+    <!-- Use importmap for proper module loading -->
   <script type="module">
-    console.log('🚀 Loading react_components through importmap with cache busting');
-    
-    // Force cache busting by adding random parameter to importmap URL
-    const cacheBuster = Date.now() + '_' + Math.random().toString(36).substring(7);
-    console.log('Cache buster value:', cacheBuster);
-    
-    // Use importmap to get the correct path, then add cache busting
-    const importMap = JSON.parse(document.querySelector('script[type="importmap"]').textContent);
-    const reactComponentsPath = importMap.imports['react_components'];
-    const cacheBustedPath = reactComponentsPath + (reactComponentsPath.includes('?') ? '&' : '?') + 'cb=' + cacheBuster;
-    
-    console.log('Original path:', reactComponentsPath);
-    console.log('Cache busted path:', cacheBustedPath);
+    console.log('🚀 Loading react_components through importmap');
     
     try {
-      const module = await import(cacheBustedPath);
+      const module = await import('react_components');
       console.log('✅ react_components loaded successfully');
       
       if (module.initializeReactComponents) {
@@ -29,18 +17,6 @@
       }
     } catch (error) {
       console.error('❌ Failed to load react_components:', error);
-      
-      // Fallback: try the original path
-      try {
-        console.log('🔄 Trying fallback without cache busting');
-        const fallbackModule = await import(reactComponentsPath);
-        if (fallbackModule.initializeReactComponents) {
-          fallbackModule.initializeReactComponents();
-          console.log('🎯 React components initialized via fallback');
-        }
-      } catch (fallbackError) {
-        console.error('❌ Fallback also failed:', fallbackError);
-      }
     }
   </script>
 <% end %><div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

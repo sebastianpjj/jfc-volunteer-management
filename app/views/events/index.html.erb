@@ -1,5 +1,5 @@
 <% content_for :javascript do %>
-  <%= javascript_import_module_tag "react_components" %>
+  <%= javascript_import_module_tag "react_components", data: { cache_bust: "20250730-v3" } %>
 <% end %>
 
 <div id="events-list-react"></div>

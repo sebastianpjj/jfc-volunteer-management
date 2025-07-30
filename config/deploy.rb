@@ -84,12 +84,22 @@ namespace :deploy do
     end
   end
 
+  desc 'Force complete asset rebuild'
+  task :force_asset_rebuild do
+    on roles(:app) do
+      # Remove shared assets directory to force complete rebuild
+      execute :rm, '-rf', shared_path.join('public/assets')
+      execute :mkdir, '-p', shared_path.join('public/assets')
+    end
+  end
+
   desc 'Initial Deploy'
   task :initial do
     invoke 'deploy'
   end
 
   # before :starting, :check_revision
+  before :deploy, :force_asset_rebuild
   after  :finishing, :cleanup
   after  :finishing, :clear_importmap_cache
   after  :finishing, 'passenger:restart'

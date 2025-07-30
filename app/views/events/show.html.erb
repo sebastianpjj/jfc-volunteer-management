@@ -1,7 +1,7 @@
 <% content_for :title, @event.name %>
 
 <% content_for :javascript do %>
-  <%= javascript_import_module_tag "react_components", "data-cache-bust": "20250730-v2" %>
+  <%= javascript_import_module_tag "react_components", data: { cache_bust: "20250730-v2" } %>
 <% end %>
 
 <div id="event-detail-react" data-event-id="<%= @event.id %>"></div>

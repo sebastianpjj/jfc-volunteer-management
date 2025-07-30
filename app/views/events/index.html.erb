@@ -1,4 +1,20 @@
 <% content_for :javascript do %>
+  <script type="module">
+    import { initializeReactComponents } from 'react_components';
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Initializing React components...');
+      initializeReactComponents();
+    });
+    
+    // Also initialize on Turbo navigation
+    document.addEventListener('turbo:load', () => {
+      console.log('🔄 Turbo load - initializing React components...');
+      initializeReactComponents();
+    });
+  </script>
+<% end %>script do %>
     <!-- Use importmap for proper module loading -->
   <script type="module">
     console.log('🚀 Loading react_components through importmap');

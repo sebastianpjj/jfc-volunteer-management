@@ -1,7 +1,8 @@
 import React from 'react';
 
-// Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support - FORCE REBUILD v3 - PRODUCTION CACHE ISSUE
+// Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support - FORCE REBUILD v4 - FIXING STALE IMPORTMAP
 // Adding extra content to ensure hash changes: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+// FORCE CHANGE: ${Date.now()} - This should trigger a new hash for this component
 
 const EventDetail = ({ eventId }) => {
   const [event, setEvent] = React.useState(null);

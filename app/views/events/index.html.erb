@@ -1,36 +1,17 @@
 <% content_for :javascript do %>
   <script type="module">
-    import { initializeReactComponents } from 'react_components';
+    import { createRoot } from "react-dom/client";
+    import React from "react";
+    import EventsListComponent from "components/EventsListComponent";
     
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 Initializing React components...');
-      initializeReactComponents();
-    });
-    
-    // Also initialize on Turbo navigation
-    document.addEventListener('turbo:load', () => {
-      console.log('🔄 Turbo load - initializing React components...');
-      initializeReactComponents();
-    });
-  </script>
-<% end %>script do %>
-    <!-- Use importmap for proper module loading -->
-  <script type="module">
-    console.log('🚀 Loading react_components through importmap');
-    
-    try {
-      const module = await import('react_components');
-      console.log('✅ react_components loaded successfully');
-      
-      if (module.initializeReactComponents) {
-        module.initializeReactComponents();
-        console.log('🎯 React components initialized');
-      } else {
-        console.error('❌ initializeReactComponents function not found');
+    document.addEventListener("DOMContentLoaded", function() {
+      const eventsListContainer = document.getElementById('events-list-react');
+      if (eventsListContainer) {
+        const root = createRoot(eventsListContainer);
+        root.render(React.createElement(EventsListComponent));
       }
-    } catch (error) {
-      console.error('❌ Failed to load react_components:', error);
-    }
+    });
   </script>
-<% end %><div id="events-list-react"></div>
+<% end %>
+
+<div id="events-list-react"></div>

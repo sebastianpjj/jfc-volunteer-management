@@ -99,7 +99,7 @@ namespace :deploy do
   end
 
   # before :starting, :check_revision
-  before :deploy, :force_asset_rebuild
+  before 'deploy:assets:precompile', 'deploy:force_asset_rebuild'
   after  :finishing, :cleanup
   after  :finishing, :clear_importmap_cache
   after  :finishing, 'passenger:restart'

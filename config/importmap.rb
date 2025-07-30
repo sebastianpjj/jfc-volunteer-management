@@ -1,7 +1,6 @@
 # Pin npm packages by running ./bin/importmap
 
-# Temporarily comment out application pin to fix 404
-# pin "application"
+pin "application"
 pin "@hotwired/turbo-rails", to: "turbo.min.js"
 pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"

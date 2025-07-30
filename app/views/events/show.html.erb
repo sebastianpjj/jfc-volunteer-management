@@ -12,7 +12,7 @@
     // Use importmap to get the correct path, then add cache busting
     const importMap = JSON.parse(document.querySelector('script[type="importmap"]').textContent);
     const reactComponentsPath = importMap.imports['react_components'];
-    const cacheBustedPath = reactComponentsPath + '&cb=' + cacheBuster;
+    const cacheBustedPath = reactComponentsPath + (reactComponentsPath.includes('?') ? '&' : '?') + 'cb=' + cacheBuster;
     
     console.log('Original path:', reactComponentsPath);
     console.log('Cache busted path:', cacheBustedPath);

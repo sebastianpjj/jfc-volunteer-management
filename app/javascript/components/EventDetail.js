@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support - FORCE REBUILD v2
+// Cache bust: Updated 2025-07-30 for shifts_header and shifts_subtext support - FORCE REBUILD v3 - PRODUCTION CACHE ISSUE
 
 const EventDetail = ({ eventId }) => {
   const [event, setEvent] = React.useState(null);
@@ -30,6 +30,8 @@ const EventDetail = ({ eventId }) => {
       }
       const data = await response.json();
       console.log('📊 Event detail data loaded:', data);
+      console.log('🎯 EventDetail: shifts_header value:', data.shifts_header);
+      console.log('🎯 EventDetail: shifts_subtext value:', data.shifts_subtext);
       setEvent(data);
     } catch (err) {
       console.error('❌ Error fetching event:', err);

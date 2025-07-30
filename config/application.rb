@@ -37,14 +37,5 @@ module JfcHands
     config.assets.version = Time.now.to_i.to_s
 
     # config.eager_load_paths << Rails.root.join("extras")
-
-    # Set a unique assets version for cache busting
-    # Use REVISION file content if available (set by deployment), otherwise use timestamp
-    revision_file = Rails.root.join("REVISION")
-    if File.exist?(revision_file)
-      config.assets.version = File.read(revision_file).strip[0..7] # Use first 8 chars of commit hash
-    else
-      config.assets.version = "1.0.0"
-    end
   end
 end

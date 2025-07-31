@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import EventsList from 'components/EventsList';
 import EventDetail from 'components/EventDetail';
 
+
 const initializeReactComponents = () => {
   console.log('🚀 Initializing React components...');
 

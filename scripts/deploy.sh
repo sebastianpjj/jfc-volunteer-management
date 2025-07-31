@@ -20,6 +20,9 @@ git commit -m "$COMMIT_MESSAGE"
 # Push to remote
 git push
 
+# Wait for git push to complete
+sleep 5
+
 # Deploy to production
 bundle exec cap production deploy
 

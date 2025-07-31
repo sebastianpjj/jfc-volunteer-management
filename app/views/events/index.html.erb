@@ -2,13 +2,13 @@
   <script type="module">
     import { createRoot } from "react-dom/client";
     import React from "react";
-    import { EventsListComponent } from "react_components";
+    import EventsList from "components/EventsList";
 
     document.addEventListener("DOMContentLoaded", function() {
       const eventsListContainer = document.getElementById('events-list-react');
       if (eventsListContainer) {
         const root = createRoot(eventsListContainer);
-        root.render(React.createElement(EventsListComponent));
+        root.render(React.createElement(EventsList));
       }
     });
   </script>

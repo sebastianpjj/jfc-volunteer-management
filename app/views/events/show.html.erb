@@ -6,14 +6,14 @@
   <script type="module">
     import { createRoot } from "react-dom/client";
     import React from "react";
-    import EventDetailComponent from "components/EventDetailComponent";
+    import EventDetail from "components/EventDetail";
 
     document.addEventListener("DOMContentLoaded", function() {
       const eventDetailContainer = document.getElementById('event-detail-react');
       if (eventDetailContainer) {
         const eventId = parseInt(eventDetailContainer.dataset.eventId);
         const root = createRoot(eventDetailContainer);
-        root.render(React.createElement(EventDetailComponent, { eventId }));
+        root.render(React.createElement(EventDetail, { eventId }));
       }
     });
   </script>

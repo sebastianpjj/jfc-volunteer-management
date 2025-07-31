@@ -10,10 +10,6 @@ class Event < ApplicationRecord
   # Prevent deletion if registrations exist
   before_destroy :check_for_registrations
 
-  def shifts_subtext
-
-  end
-
   def can_be_deleted?
     registrations.count == 0 && shifts.all?(&:can_be_deleted?)
   end

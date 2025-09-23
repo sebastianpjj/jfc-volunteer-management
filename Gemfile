@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Using Rails 7.2 for stable importmap and asset pipeline behavior
-gem "rails", "~> 7.2.0"
+gem "rails", "~> 8.0.3"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 # gem "propshaft"
 # Use mysql2 as the database for Active Record

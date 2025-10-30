@@ -1,6 +1,13 @@
 ActiveAdmin.register Shift do
   permit_params :name, :group_name, :start_date, :end_date, :event_id, :max_volunteers
 
+  # Add filters for better admin experience
+  filter :event, collection: -> { Event.order(date: :desc).pluck(:name, :id) }
+  filter :name
+  filter :group_name
+  filter :start_date
+  filter :end_date
+
   index do
     selectable_column
     id_column

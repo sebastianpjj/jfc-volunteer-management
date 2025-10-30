@@ -50,7 +50,7 @@ class Shift < ApplicationRecord
 
   # Ransack configuration for ActiveAdmin search
   def self.ransackable_attributes(auth_object = nil)
-    ["name", "group_name", "start_date", "end_date", "created_at", "updated_at", "id", "event_id"]
+    ["name", "group_name", "start_date", "end_date", "id", "event_id"]
   end
 
   def self.ransackable_associations(auth_object = nil)

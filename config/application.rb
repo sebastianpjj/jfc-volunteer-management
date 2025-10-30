@@ -32,6 +32,10 @@ module JfcHands
     # Make Active Record use the application time zone instead of UTC
     config.active_record.default_timezone = :local
 
+    # Set German as default locale
+    config.i18n.default_locale = :de
+    config.i18n.available_locales = [:de, :en]
+
     # Force asset cache busting on each deployment
     # Use a simple timestamp that gets evaluated during asset compilation
     config.assets.version = Time.now.to_i.to_s

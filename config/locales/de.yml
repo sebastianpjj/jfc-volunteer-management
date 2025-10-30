@@ -1,0 +1,237 @@
+de:
+  # ActiveAdmin German translations
+  active_admin:
+    dashboard: "Dashboard"
+    dashboard_welcome:
+      welcome: "Willkommen bei ActiveAdmin. Dies ist die Standard-Dashboard-Seite."
+      call_to_action: "Um Dashboard-Abschnitte hinzuzufügen, schauen Sie sich 'app/admin/dashboard.rb' an"
+    view: "Anzeigen"
+    edit: "Bearbeiten"
+    delete: "Löschen"
+    delete_confirmation: "Sind Sie sicher, dass Sie das löschen möchten?"
+    new_model: "Neu %{model}"
+    edit_model: "%{model} bearbeiten"
+    delete_model: "%{model} löschen"
+    details: "%{model} Details"
+    cancel: "Abbrechen"
+    empty: "Leer"
+    previous: "Zurück"
+    next: "Weiter"
+    download: "Herunterladen:"
+    has_many_new: "Neu %{model} hinzufügen"
+    has_many_delete: "Löschen"
+    has_many_remove: "Entfernen"
+    filters:
+      buttons:
+        filter: "Filtern"
+        clear: "Filter zurücksetzen"
+      predicates:
+        contains: "Enthält"
+        equals: "Gleich"
+        starts_with: "Beginnt mit"
+        ends_with: "Endet mit"
+        greater_than: "Größer als"
+        less_than: "Kleiner als"
+        from: "Von"
+        to: "Bis"
+    search_status:
+      headline: "Suchstatus:"
+      current_scope: "Bereich:"
+      current_filters: "Aktuelle Filter:"
+      no_current_filters: "Keine"
+    status_tag:
+      "yes": "Ja"
+      "no": "Nein"
+    main_content: "Bitte implementieren Sie %{model}#main_content um Inhalte anzuzeigen."
+    logout: "Abmelden"
+    powered_by: "Powered by %{active_admin} %{version}"
+    sidebars:
+      filters: "Filter"
+      search_status: "Suchstatus"
+    pagination:
+      empty: "%{model} gefunden"
+      one: "Anzeige <b>1</b> %{model}"
+      one_page: "Anzeige <b>alle %{n}</b> %{model}"
+      multiple: "Anzeige %{model} <b>%{from}&nbsp;-&nbsp;%{to}</b> von <b>%{total}</b> insgesamt"
+      multiple_without_total: "Anzeige %{model} <b>%{from}&nbsp;-&nbsp;%{to}</b>"
+      entry:
+        one: "Eintrag"
+        other: "Einträge"
+    any: "Beliebig"
+    blank_slate:
+      content: "Es gibt noch keine %{resource_name}."
+      link: "Erstellen Sie eine"
+    dropdown_actions:
+      button_label: "Aktionen"
+    batch_actions:
+      button_label: "Massenaktionen"
+      default_confirmation: "Sind Sie sicher, dass Sie das machen möchten?"
+      delete_confirmation: "Sind Sie sicher, dass Sie diese %{plural_model} löschen möchten?"
+      succesfully_destroyed:
+        one: "1 %{model} erfolgreich gelöscht"
+        other: "%{count} %{plural_model} erfolgreich gelöscht"
+      selection_toggle_explanation: "(Auswahl umschalten)"
+      link: "Link"
+      action_label: "%{title} ausgewählte"
+      labels:
+        destroy: "Löschen"
+    comments:
+      created_at: "Erstellt am"
+      resource_type: "Ressourcentyp"
+      author_type: "Autorentyp"
+      body: "Text"
+      author: "Autor"
+      title: "Kommentar"
+      add: "Kommentar hinzufügen"
+      resource: "Ressource"
+      no_comments_yet: "Noch keine Kommentare."
+      author_missing: "Anonym"
+      title_content: "Kommentare (%{count})"
+      errors:
+        empty_text: "Kommentar wurde nicht gespeichert, Text war leer."
+    devise:
+      username:
+        title: "Benutzername"
+      email:
+        title: "E-Mail"
+      subdomain:
+        title: "Subdomain"
+      password:
+        title: "Passwort"
+      sign_up:
+        title: "Registrieren"
+        submit: "Registrieren"
+      login:
+        title: "Anmelden"
+        remember_me: "Angemeldet bleiben"
+        submit: "Anmelden"
+      reset_password:
+        title: "Passwort vergessen?"
+        submit: "Passwort zurücksetzen"
+      change_password:
+        title: "Passwort ändern"
+        submit: "Passwort ändern"
+      unlock:
+        title: "Erneut senden Entsperren Anweisungen"
+        submit: "Entsperren Anweisungen erneut senden"
+      resend_confirmation_instructions:
+        title: "Bestätigungsanweisungen erneut senden"
+        submit: "Bestätigungsanweisungen erneut senden"
+      links:
+        sign_up: "Registrieren"
+        sign_in: "Anmelden"
+        forgot_your_password: "Passwort vergessen?"
+        sign_in_with_omniauth_provider: "Mit %{provider} anmelden"
+        resend_unlock_instructions: "Entsperren-Anweisungen erneut senden"
+        resend_confirmation_instructions: "Bestätigungsanweisungen erneut senden"
+    access_denied:
+      message: "Sie sind nicht berechtigt, diese Aktion auszuführen."
+    index_list:
+      table: "Tabelle"
+      block: "Liste"
+      grid: "Raster"
+      blog: "Blog"
+
+  # Model names (for ActiveAdmin resource names)
+  activerecord:
+    models:
+      event:
+        one: "Veranstaltung"
+        other: "Veranstaltungen"
+      shift:
+        one: "Schicht"
+        other: "Schichten"
+      registration:
+        one: "Anmeldung"
+        other: "Anmeldungen"
+      admin_user:
+        one: "Admin-Benutzer"
+        other: "Admin-Benutzer"
+    attributes:
+      event:
+        id: "ID"
+        name: "Name"
+        date: "Datum"
+        shifts_header: "Schichten-Überschrift"
+        shifts_subtext: "Schichten-Untertitel"
+        created_at: "Erstellt am"
+        updated_at: "Aktualisiert am"
+      shift:
+        id: "ID"
+        name: "Name"
+        group_name: "Gruppenname"
+        event: "Veranstaltung"
+        event_id: "Veranstaltung"
+        start_date: "Startdatum"
+        end_date: "Enddatum"
+        max_volunteers: "Max. Helfer"
+        created_at: "Erstellt am"
+        updated_at: "Aktualisiert am"
+      registration:
+        id: "ID"
+        name: "Name"
+        email: "E-Mail"
+        phone: "Telefon"
+        shift: "Schicht"
+        shift_id: "Schicht"
+        shift_event_id: "Veranstaltung"
+        publish_name: "Name veröffentlichen"
+        created_at: "Erstellt am"
+        updated_at: "Aktualisiert am"
+      admin_user:
+        id: "ID"
+        email: "E-Mail"
+        password: "Passwort"
+        password_confirmation: "Passwort bestätigen"
+        current_password: "Aktuelles Passwort"
+        created_at: "Erstellt am"
+        updated_at: "Aktualisiert am"
+
+  # Custom labels for our application
+  admin:
+    events:
+      title: "Veranstaltungen"
+      new: "Neue Veranstaltung"
+      edit: "Veranstaltung bearbeiten"
+      show: "Veranstaltung anzeigen"
+      delete: "Veranstaltung löschen"
+    shifts:
+      title: "Schichten"
+      new: "Neue Schicht"
+      edit: "Schicht bearbeiten"
+      show: "Schicht anzeigen"
+      delete: "Schicht löschen"
+      time_range: "Zeitbereich"
+      duration: "Dauer"
+      registrations: "Anmeldungen"
+      capacity_status: "Kapazitätsstatus"
+      deletion_status: "Löschstatus"
+      can_be_deleted: "Kann gelöscht werden"
+      protected: "Geschützt"
+      cannot_delete: "Kann nicht gelöscht werden"
+    registrations:
+      title: "Anmeldungen"
+      new: "Neue Anmeldung"
+      edit: "Anmeldung bearbeiten"
+      show: "Anmeldung anzeigen"
+      delete: "Anmeldung löschen"
+      volunteer_name: "Helfer-Name"
+      registered_at: "Angemeldet am"
+    admin_users:
+      title: "Admin-Benutzer"
+      new: "Neuer Admin-Benutzer"
+      edit: "Admin-Benutzer bearbeiten"
+      show: "Admin-Benutzer anzeigen"
+      delete: "Admin-Benutzer löschen"
+
+  # Date and time formats
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d.%m."
+      long: "%d. %B %Y"
+  time:
+    formats:
+      default: "%d.%m.%Y %H:%M"
+      short: "%d.%m. %H:%M"
+      long: "%d. %B %Y %H:%M:%S"

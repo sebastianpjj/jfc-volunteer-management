@@ -1,6 +1,16 @@
 ActiveAdmin.register Registration do
   permit_params :name, :email, :phone, :shift_id
 
+  # Add filters for better admin experience
+  # Custom filter for events - using a different approach
+  filter :shift_event_id, as: :select, collection: -> { Event.order(date: :desc).pluck(:name, :id) }, label: 'Event'
+  filter :name
+  filter :email
+  filter :phone
+  filter :shift, collection: -> { Shift.joins(:event).order('events.date DESC, shifts.start_date ASC').map { |s| ["#{s.event.name} - #{s.name} (#{s.group_name})", s.id] } }
+  filter :created_at
+
+
   index do
     selectable_column
     id_column

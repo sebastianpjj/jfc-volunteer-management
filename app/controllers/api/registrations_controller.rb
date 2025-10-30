@@ -36,6 +36,6 @@ class Api::RegistrationsController < ApplicationController
   private
 
   def registration_params
-    params.require(:registration).permit(:name, :email, :phone, :shift_id)
+    params.require(:registration).permit(:name, :email, :phone, :shift_id, :publish_name)
   end
 end

@@ -16,7 +16,8 @@ const EventDetail = ({ eventId }) => {
   const [volunteerInfo, setVolunteerInfo] = React.useState({
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    publish_name: true
   });
 
   React.useEffect(() => {
@@ -59,7 +60,8 @@ const EventDetail = ({ eventId }) => {
             shift_id: shiftId,
             name: volunteerInfo.name || 'Freiwilliger Helfer',
             email: volunteerInfo.email || 'volunteer@example.com',
-            phone: volunteerInfo.phone || ''
+            phone: volunteerInfo.phone || '',
+            publish_name: volunteerInfo.publish_name
           }
         })
       });
@@ -191,6 +193,14 @@ const EventDetail = ({ eventId }) => {
       groups[combinedKey].shifts.push(shift);
       return groups;
     }, {});
+  };
+
+  const renderVolunteerName = (registration) => {
+    if (registration.publish_name) {
+      return registration.name;
+    } else {
+      return 'n/a';
+    }
   };
 
   if (loading) {
@@ -447,6 +457,25 @@ const EventDetail = ({ eventId }) => {
                                 className: 'w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-jfc-green focus:border-transparent mb-2',
                                 placeholder: 'Telefon (optional)'
                               }),
+                              // privacy
+                              React.createElement('div', {
+                                className: 'mb-2'
+                              },
+                                React.createElement('label', {
+                                  className: 'flex items-start text-xs text-gray-600 cursor-pointer'
+                                },
+                                  React.createElement('input', {
+                                    type: 'checkbox',
+                                    checked: !volunteerInfo.publish_name,
+                                    onChange: (e) => setVolunteerInfo(prev => ({
+                                      ...prev,
+                                      publish_name: !e.target.checked
+                                    })),
+                                    className: 'mr-2 mt-0.5 flex-shrink-0'
+                                  }),
+                                  React.createElement('span', {}, 'Ich möchte nicht, dass mein Name hier veröffentlicht wird.')
+                                )
+                              ),
                               React.createElement('div', {
                                 className: 'flex gap-2'
                               },
@@ -477,7 +506,43 @@ const EventDetail = ({ eventId }) => {
                                 className: 'text-gray-500 text-xs'
                               }, 'Alle Plätze sind belegt.')
                             )
-                          : null
+                          : null,
+
+                        // Show registered volunteers or "keine Anmeldungen" message
+                        shift.registrations && shift.registrations.length > 0
+                          ? React.createElement('div', {
+                              className: 'mt-3 pt-3 border-t border-gray-200'
+                            },
+                              React.createElement('h5', {
+                                className: 'text-xs font-semibold text-jfc-navy mb-2 flex items-center'
+                              },
+                                React.createElement('span', {
+                                  className: 'mr-1'
+                                }, '👥'),
+                                'Angemeldete Helfer:'
+                              ),
+                              React.createElement('div', {
+                                className: 'flex flex-wrap gap-1'
+                              },
+                                shift.registrations.map((registration, index) =>
+                                  React.createElement('span', {
+                                    key: registration.id,
+                                    className: 'inline-flex items-center bg-jfc-light-gray text-jfc-navy px-2 py-1 rounded-full text-xs font-medium'
+                                  },
+                                    renderVolunteerName(registration)
+                                  )
+                                )
+                              )
+                            )
+                          : !shift['full?']
+                            ? React.createElement('div', {
+                                className: 'mt-3 pt-3 border-t border-gray-200'
+                              },
+                                React.createElement('p', {
+                                  className: 'text-xs text-gray-500 italic'
+                                }, '💬 Noch keine Anmeldungen - sei der/die Erste!')
+                              )
+                            : null
                       )
                     )
                   )

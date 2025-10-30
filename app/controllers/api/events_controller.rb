@@ -20,7 +20,11 @@ class Api::EventsController < ApplicationController
       only: [:id, :name, :date, :shifts_header, :shifts_subtext, :created_at, :updated_at],
       include: {
         shifts: {
-          include: :registrations,
+          include: {
+            registrations: {
+              only: [:id, :name, :publish_name]
+            }
+          },
           methods: [:available_spots, :spots_remaining, :spots_taken, :full?, :duration_in_hours, :time_range]
         }
       }

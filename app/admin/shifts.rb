@@ -11,18 +11,21 @@ ActiveAdmin.register Shift do
   index do
     selectable_column
     id_column
-    column "Event" do |shift|
+    column "Veranstaltung" do |shift|
       link_to shift.event.name, admin_event_path(shift.event)
     end
-    column :name
-    column :group_name
-    column "Time Range" do |shift|
+    column "Name", :name
+    column "Gruppe", :group_name
+    column "Tag" do |shift|
+      shift.start_date.strftime("%d.%m.%Y")
+    end
+    column "Zeitbereich" do |shift|
       shift.time_range
     end
-    column "Duration" do |shift|
+    column "Dauer" do |shift|
       "#{shift.duration_in_hours}h"
     end
-    column "Registrations", sortable: false do |shift|
+    column "Anmeldungen", sortable: false do |shift|
       count = shift.registrations.count
       max = shift.max_volunteers
       if count > 0
@@ -35,20 +38,20 @@ ActiveAdmin.register Shift do
         "0/#{max} (empty)"
       end
     end
-    column "Deletion Status", sortable: false do |shift|
+    column "Löschstatus", sortable: false do |shift|
       if shift.can_be_deleted?
-        "Can be deleted"
+        "Kann gelöscht werden"
       else
-        "Protected"
+        "Geschützt"
       end
     end
     actions do |shift|
       if shift.can_be_deleted?
-        item "Delete", admin_shift_path(shift), method: :delete,
-             confirm: "Are you sure you want to delete this shift?",
+        item "Löschen", admin_shift_path(shift), method: :delete,
+             confirm: "Sind Sie sicher, dass Sie diese Schicht löschen möchten?",
              class: "member_link delete_link"
       else
-        item "Cannot Delete", "#", class: "member_link disabled",
+        item "Kann nicht löschen", "#", class: "member_link disabled",
              title: shift.deletion_blocked_message
       end
     end
@@ -56,59 +59,59 @@ ActiveAdmin.register Shift do
 
   show do
     attributes_table do
-      row "Event" do |shift|
+      row "Veranstaltung" do |shift|
         link_to shift.event.name, admin_event_path(shift.event)
       end
-      row :name
-      row :group_name
-      row "Start Date/Time" do |shift|
-        shift.start_date.strftime("%B %d, %Y at %I:%M %p")
+      row "Name", :name
+      row "Gruppe", :group_name
+      row "Startzeit" do |shift|
+        shift.start_date.strftime("%d. %B %Y um %H:%M Uhr")
       end
-      row "End Date/Time" do |shift|
-        shift.end_date.strftime("%B %d, %Y at %I:%M %p")
+      row "Endzeit" do |shift|
+        shift.end_date.strftime("%d. %B %Y um %H:%M Uhr")
       end
-      row "Duration" do |shift|
-        "#{shift.duration_in_hours} hours"
+      row "Dauer" do |shift|
+        "#{shift.duration_in_hours} Stunden"
       end
-      row "Time Range" do |shift|
+      row "Zeitbereich" do |shift|
         shift.time_range
       end
-      row "Registration Count" do |shift|
-        "#{shift.spots_taken} / #{shift.max_volunteers} volunteers"
+      row "Anzahl Anmeldungen" do |shift|
+        "#{shift.spots_taken} / #{shift.max_volunteers} Helfer"
       end
-      row "Capacity Status" do |shift|
+      row "Kapazitätsstatus" do |shift|
         if shift.full?
-          "FULL - No more registrations possible"
+          "VOLL - Keine weiteren Anmeldungen möglich"
         else
-          "#{shift.spots_remaining} spots remaining"
+          "#{shift.spots_remaining} Plätze verfügbar"
         end
       end
-      row "Deletion Status" do |shift|
+      row "Löschstatus" do |shift|
         if shift.can_be_deleted?
-          "This shift can be deleted"
+          "Diese Schicht kann gelöscht werden"
         else
           shift.deletion_blocked_message
         end
       end
     end
 
-    panel "Registrations" do
+    panel "Anmeldungen" do
       if shift.registrations.any?
         table_for shift.registrations do
-          column "Volunteer Name" do |registration|
+          column "Helfer-Name" do |registration|
             registration.name
           end
-          column :email
-          column :phone
-          column "Registered At" do |registration|
-            registration.created_at.strftime("%B %d, %Y at %I:%M %p")
+          column "E-Mail", :email
+          column "Telefon", :phone
+          column "Angemeldet am" do |registration|
+            registration.created_at.strftime("%d. %B %Y um %H:%M Uhr")
           end
-          column "Actions" do |registration|
-            link_to "View", admin_registration_path(registration), class: "member_link"
+          column "Aktionen" do |registration|
+            link_to "Anzeigen", admin_registration_path(registration), class: "member_link"
           end
         end
       else
-        div "No registrations for this shift."
+        div "Keine Anmeldungen für diese Schicht."
       end
     end
   end

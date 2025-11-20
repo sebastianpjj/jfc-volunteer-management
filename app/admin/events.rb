@@ -11,14 +11,14 @@ ActiveAdmin.register Event do
   index do
     selectable_column
     id_column
-    column :name
+    column "Name", :name
     column "Datum" do |event|
       event.date_range_compact
     end
-    column "Shifts" do |event|
+    column "Schichten" do |event|
       event.shifts.count
     end
-    column "Capacity" do |event|
+    column "Kapazität" do |event|
       total_spots = event.shifts.sum(:max_volunteers)
       taken_spots = event.registrations.count
       "#{taken_spots} / #{total_spots}"
@@ -28,56 +28,59 @@ ActiveAdmin.register Event do
 
   show do
     attributes_table do
-      row :name
+      row "Name", :name
       row "Datum" do |event|
         event.date_range_detailed
       end
-      row :shifts_header, label: "Shifts Section Header"
-      row :shifts_subtext, label: "Shifts Section Subtext"
-      row "Capacity Overview" do |event|
+      row "Schichten-Überschrift", :shifts_header
+      row "Schichten-Untertitel", :shifts_subtext
+      row "Kapazitätsübersicht" do |event|
         capacity = event.total_capacity
         taken = event.capacity_taken
         remaining = event.capacity_remaining
         percentage = event.capacity_percentage
 
         div do
-          div "Total Capacity: #{capacity} volunteers"
-          div "Registered: #{taken} volunteers (#{percentage}%)"
-          div "Available: #{remaining} spots remaining"
+          div "Gesamtkapazität: #{capacity} Helfer"
+          div "Angemeldet: #{taken} Helfer (#{percentage}%)"
+          div "Verfügbar: #{remaining} Plätze"
 
           status_text = if percentage > 80
-            "Nearly Full"
+            "Fast voll"
           elsif percentage > 50
-            "Half Full"
+            "Halb voll"
           elsif taken > 0
-            "Some Registration"
+            "Einige Anmeldungen"
           else
-            "No Registrations"
+            "Keine Anmeldungen"
           end
           div "Status: #{status_text}"
         end
       end
-      row "Total Registrations" do |event|
+      row "Gesamte Anmeldungen" do |event|
         count = event.registrations.count
         if count > 0
-          "#{count} total registrations"
+          "#{count} Anmeldungen insgesamt"
         else
-          "No registrations"
+          "Keine Anmeldungen"
         end
       end
     end
 
-    panel "Shifts" do
+    panel "Schichten" do
       table_for event.shifts do
-        column :name
-        column :group_name
-        column "Time Range" do |shift|
+        column "Name", :name
+        column "Gruppe", :group_name
+        column "Tag" do |shift|
+          shift.start_date.strftime("%d.%m.%Y")
+        end
+        column "Zeitbereich" do |shift|
           shift.time_range
         end
-        column "Duration" do |shift|
+        column "Dauer" do |shift|
           "#{shift.duration_in_hours}h"
         end
-        column "Registrations" do |shift|
+        column "Anmeldungen" do |shift|
           count = shift.registrations.count
           max = shift.max_volunteers
           if count > 0

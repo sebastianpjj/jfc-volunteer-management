@@ -1,5 +1,5 @@
 ActiveAdmin.register Event do
-  permit_params :name, :date, :start_date, :end_date, :shifts_header, :shifts_subtext, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
+  permit_params :name, :date, :start_date, :end_date, :shifts_header, :shifts_subtext, :contact_email, :contact_tel, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
 
   filter :name
   filter :start_date
@@ -111,6 +111,12 @@ ActiveAdmin.register Event do
                 value: f.object.end_date&.strftime('%Y-%m-%d')
               },
               hint: "Letztes Datum der Veranstaltung"
+      f.input :contact_email,
+              label: "Kontakt E-Mail",
+              hint: "E-Mail-Adresse für Rückfragen (Standard: event@eintracht-feldberg.de)"
+      f.input :contact_tel,
+              label: "Kontakt Telefon",
+              hint: "Telefonnummer für Rückfragen (optional)"
     end
 
     f.inputs "Schichten-Bereich Anpassung" do

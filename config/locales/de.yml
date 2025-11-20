@@ -178,6 +178,8 @@ de:
         end_date: "Enddatum"
         shifts_header: "Schichten-Überschrift"
         shifts_subtext: "Schichten-Untertitel"
+        contact_email: "Kontakt E-Mail"
+        contact_tel: "Kontakt Telefon"
         created_at: "Erstellt am"
         updated_at: "Aktualisiert am"
       shift:

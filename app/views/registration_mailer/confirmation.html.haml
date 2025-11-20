@@ -66,7 +66,7 @@
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @event.name
                                                         %tr
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Datum:
-                                                          %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @event.date.strftime('%A, %d. %B %Y')
+                                                          %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @event.date_range_detailed
                                                         %tr
                                                           %td{style: "padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-weight: bold;"} Dienst:
                                                           %td{style: "padding: 8px 12px; border: 1px solid #dee2e6;"}= @shift.name
@@ -94,9 +94,14 @@
                                                       %p.last-child{style: "margin-top: 15px;"}
                                                         Bei Fragen erreichst du uns unter:
                                                         %br
-                                                        %strong Tel: 0173-6630991
-                                                        %br
-                                                        %strong email: patric.wonsack@googlemail.com
+                                                        - if @event.contact_tel.present?
+                                                          %strong
+                                                            Tel:
+                                                            = @event.contact_tel
+                                                          %br
+                                                        %strong
+                                                          E-Mail:
+                                                          = @event.contact_email
 
 
                                                 %tr

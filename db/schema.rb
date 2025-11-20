@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_20_160123) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_20_180229) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -46,6 +46,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_20_160123) do
     t.text "shifts_subtext", default: "Bitte wählen Sie eine Schicht aus, für die Sie sich als freiwilliger Helfer anmelden möchten."
     t.date "start_date"
     t.date "end_date"
+    t.string "contact_email", default: "event@eintracht-feldberg.de"
+    t.string "contact_tel"
   end
 
   create_table "registrations", force: :cascade do |t|

@@ -74,8 +74,8 @@ const EventDetail = ({ eventId }) => {
 
         // Show success dialog with volunteer and shift information
         const shift = event.shifts.find(s => s.id === shiftId);
-        const startFormatted = formatDateTimeWithDay(shift?.start_date, event.date);
-        const endFormatted = formatDateTimeWithDay(shift?.end_date, event.date);
+        const startFormatted = formatDateTimeWithDay(shift?.start_date, event);
+        const endFormatted = formatDateTimeWithDay(shift?.end_date, event);
 
         setSuccessDialogData({
           volunteerName: volunteerInfo.name,
@@ -129,15 +129,45 @@ const EventDetail = ({ eventId }) => {
     }
   };
 
-  const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString('de-DE', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatDateTime = (eventData) => {
+    // Handle both old format (date field) and new format (start_date/end_date)
+    if (eventData.start_date && eventData.end_date) {
+      const startDate = new Date(eventData.start_date);
+      const endDate = new Date(eventData.end_date);
+
+      if (startDate.toDateString() === endDate.toDateString()) {
+        // Single day event
+        return startDate.toLocaleDateString('de-DE', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } else {
+        // Multi-day event
+        return `${startDate.toLocaleDateString('de-DE', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })} - ${endDate.toLocaleDateString('de-DE', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}`;
+      }
+    } else if (eventData.date) {
+      // Fallback for old format
+      return new Date(eventData.date).toLocaleDateString('de-DE', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else {
+      return 'Datum unbekannt';
+    }
   };
 
   const formatTime = (dateString) => {
@@ -147,12 +177,21 @@ const EventDetail = ({ eventId }) => {
     });
   };
 
-  const formatDateTimeWithDay = (dateString, eventDate) => {
+  const formatDateTimeWithDay = (dateString, eventData) => {
     const shiftDate = new Date(dateString);
-    const eventDateObj = new Date(eventDate);
+    let eventStartDate;
 
-    // Check if the shift is on a different day than the event
-    const isDifferentDay = shiftDate.toDateString() !== eventDateObj.toDateString();
+    // Handle both old and new format
+    if (eventData.start_date) {
+      eventStartDate = new Date(eventData.start_date);
+    } else if (eventData.date) {
+      eventStartDate = new Date(eventData.date);
+    } else {
+      eventStartDate = shiftDate; // Fallback
+    }
+
+    // Check if the shift is on a different day than the event start
+    const isDifferentDay = shiftDate.toDateString() !== eventStartDate.toDateString();
 
     // Always show day name and time
     const dayName = shiftDate.toLocaleDateString('de-DE', { weekday: 'short' });
@@ -274,7 +313,7 @@ const EventDetail = ({ eventId }) => {
             }, event.name),
             React.createElement('p', {
               className: 'text-jfc-navy text-lg'
-            }, `📅 ${formatDateTime(event.date)}`)
+            }, `📅 ${formatDateTime(event)}`)
           ),
           React.createElement('a', {
             href: '/events',
@@ -350,8 +389,8 @@ const EventDetail = ({ eventId }) => {
                                   className: 'mr-1'
                                 }, '⏰'),
                                 (() => {
-                                  const startFormatted = formatDateTimeWithDay(shift.start_date, event.date);
-                                  const endFormatted = formatDateTimeWithDay(shift.end_date, event.date);
+                                  const startFormatted = formatDateTimeWithDay(shift.start_date, event);
+                                  const endFormatted = formatDateTimeWithDay(shift.end_date, event);
 
                                   return React.createElement('span', {}, `${startFormatted.text} - ${endFormatted.text}`);
                                 })()

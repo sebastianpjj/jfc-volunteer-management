@@ -75,6 +75,28 @@ de:
       action_label: "%{title} ausgewählte"
       labels:
         destroy: "Löschen"
+    form:
+      required: "Pflichtfeld"
+      submit: "Speichern"
+      submitting: "Speichern..."
+      cancel: "Abbrechen"
+      delete: "Löschen"
+      errors:
+        header:
+          one: "1 Fehler verhinderte das Speichern dieses %{model}"
+          other: "%{count} Fehler verhinderten das Speichern dieses %{model}"
+        body: "Es gab Probleme mit den folgenden Feldern:"
+    flash:
+      actions:
+        create:
+          notice: '%{resource_name} wurde erfolgreich erstellt.'
+        update:
+          notice: '%{resource_name} wurde erfolgreich aktualisiert.'
+        destroy:
+          notice: '%{resource_name} wurde erfolgreich gelöscht.'
+          alert: '%{resource_name} konnte nicht gelöscht werden.'
+        batch_action:
+          notice: '%{successful} %{model} erfolgreich %{action}.'
     comments:
       created_at: "Erstellt am"
       resource_type: "Ressourcentyp"
@@ -152,6 +174,8 @@ de:
         id: "ID"
         name: "Name"
         date: "Datum"
+        start_date: "Startdatum"
+        end_date: "Enddatum"
         shifts_header: "Schichten-Überschrift"
         shifts_subtext: "Schichten-Untertitel"
         created_at: "Erstellt am"
@@ -186,6 +210,75 @@ de:
         current_password: "Aktuelles Passwort"
         created_at: "Erstellt am"
         updated_at: "Aktualisiert am"
+    errors:
+      models:
+        event:
+          attributes:
+            name:
+              blank: "darf nicht leer sein"
+            start_date:
+              blank: "darf nicht leer sein"
+            end_date:
+              blank: "darf nicht leer sein"
+              after_start_date: "muss nach dem Startdatum liegen"
+        shift:
+          attributes:
+            name:
+              blank: "darf nicht leer sein"
+            group_name:
+              blank: "darf nicht leer sein"
+            start_date:
+              blank: "darf nicht leer sein"
+            end_date:
+              blank: "darf nicht leer sein"
+              after_start_date: "muss nach dem Startdatum liegen"
+            max_volunteers:
+              blank: "darf nicht leer sein"
+              not_a_number: "muss eine Zahl sein"
+              greater_than: "muss größer als %{count} sein"
+        registration:
+          attributes:
+            name:
+              blank: "darf nicht leer sein"
+            email:
+              blank: "darf nicht leer sein"
+              invalid: "hat ein ungültiges Format"
+            shift:
+              blank: "muss ausgewählt werden"
+        admin_user:
+          attributes:
+            email:
+              blank: "darf nicht leer sein"
+              invalid: "hat ein ungültiges Format"
+              taken: "ist bereits vergeben"
+            password:
+              blank: "darf nicht leer sein"
+              too_short: "ist zu kurz (mindestens %{count} Zeichen)"
+      messages:
+        blank: "darf nicht leer sein"
+        present: "muss leer sein"
+        required: "muss ausgewählt werden"
+        confirmation: "stimmt nicht mit %{attribute} überein"
+        accepted: "muss akzeptiert werden"
+        empty: "darf nicht leer sein"
+        equal_to: "muss gleich %{count} sein"
+        even: "muss gerade sein"
+        exclusion: "ist nicht verfügbar"
+        greater_than: "muss größer als %{count} sein"
+        greater_than_or_equal_to: "muss größer oder gleich %{count} sein"
+        inclusion: "ist kein gültiger Wert"
+        invalid: "ist nicht gültig"
+        less_than: "muss kleiner als %{count} sein"
+        less_than_or_equal_to: "muss kleiner oder gleich %{count} sein"
+        model_invalid: "Validierung fehlgeschlagen: %{errors}"
+        not_a_number: "ist keine Zahl"
+        not_an_integer: "muss ganzzahlig sein"
+        odd: "muss ungerade sein"
+        other_than: "darf nicht gleich %{count} sein"
+        taken: "ist bereits vergeben"
+        too_long: "ist zu lang (höchstens %{count} Zeichen)"
+        too_short: "ist zu kurz (mindestens %{count} Zeichen)"
+        wrong_length: "hat die falsche Länge (muss genau %{count} Zeichen haben)"
 
   # Custom labels for our application
   admin:
@@ -195,6 +288,9 @@ de:
       edit: "Veranstaltung bearbeiten"
       show: "Veranstaltung anzeigen"
       delete: "Veranstaltung löschen"
+      event_details: "Event Details"
+      shifts_section_customization: "Schichten-Bereich Anpassung"
+      shifts: "Schichten"
     shifts:
       title: "Schichten"
       new: "Neue Schicht"

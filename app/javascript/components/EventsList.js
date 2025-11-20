@@ -27,26 +27,58 @@ const EventsList = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('de-DE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  const formatDate = (eventData) => {
+    // Handle both old format (date field) and new format (start_date/end_date)
+    if (eventData.start_date && eventData.end_date) {
+      const startDate = new Date(eventData.start_date);
+      const endDate = new Date(eventData.end_date);
+
+      if (startDate.toDateString() === endDate.toDateString()) {
+        // Single day event
+        return startDate.toLocaleDateString('de-DE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+      } else if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+        // Same month
+        return `${startDate.getDate()}-${endDate.getDate()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${endDate.getFullYear()}`;
+      } else if (startDate.getFullYear() === endDate.getFullYear()) {
+        // Same year
+        return `${startDate.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })}-${endDate.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+      } else {
+        // Different years
+        return `${startDate.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}-${endDate.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+      }
+    } else if (eventData.date) {
+      // Fallback for old format
+      return new Date(eventData.date).toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } else {
+      return 'Datum unbekannt';
+    }
   };
 
   const isEventExpired = (event) => {
     if (!event.shifts || event.shifts.length === 0) {
-      // If no shifts, check event date
-      return new Date(event.date) < new Date();
+      // If no shifts, check end_date or fallback to date
+      if (event.end_date) {
+        return new Date(event.end_date) < new Date();
+      } else if (event.date) {
+        return new Date(event.date) < new Date();
+      }
+      return false;
     }
-    
+
     // Find the latest end_date among all shifts
     const latestShiftEnd = event.shifts.reduce((latest, shift) => {
       const shiftEnd = new Date(shift.end_date);
       return shiftEnd > latest ? shiftEnd : latest;
     }, new Date(0));
-    
+
     return latestShiftEnd < new Date();
   };
 
@@ -143,8 +175,8 @@ const EventsList = () => {
                   }, event.name),
                   React.createElement('p', {
                     className: `text-sm ${expired ? 'text-gray-400' : 'text-jfc-gray'}`
-                  }, `📅 ${formatDate(event.date)}`),
-                  expired 
+                  }, `📅 ${formatDate(event)}`),
+                  expired
                     ? React.createElement('p', {
                         className: 'text-red-500 text-sm font-medium mt-1'
                       }, '⏰ Veranstaltung beendet')

@@ -2,9 +2,10 @@ class Api::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    @events = Event.includes(:shifts).order(date: :desc)
+    @events = Event.includes(:shifts).order(start_date: :desc)
     render json: @events.as_json(
       methods: :spots_remaining,
+      only: [:id, :name, :start_date, :end_date, :shifts_header, :shifts_subtext],
       include: {
         shifts: {
           include: :registrations,
@@ -17,7 +18,7 @@ class Api::EventsController < ApplicationController
   def show
     @event = Event.includes(shifts: :registrations).find(params[:id])
     render json: @event.as_json(
-      only: [:id, :name, :date, :shifts_header, :shifts_subtext, :created_at, :updated_at],
+      only: [:id, :name, :start_date, :end_date, :shifts_header, :shifts_subtext, :created_at, :updated_at],
       include: {
         shifts: {
           include: {

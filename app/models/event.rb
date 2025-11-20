@@ -3,7 +3,12 @@ class Event < ApplicationRecord
   has_many :registrations, through: :shifts
 
   validates :name, presence: true
-  validates :date, presence: true
+  validates :start_date, presence: true
+  validates :end_date, presence: true
+  validate :end_date_after_start_date
+
+  # Keep date field for backward compatibility but make it optional
+  # validates :date, presence: true
 
   accepts_nested_attributes_for :shifts, allow_destroy: true
 
@@ -46,14 +51,43 @@ class Event < ApplicationRecord
 
   # Ransack configuration for ActiveAdmin search
   def self.ransackable_attributes(auth_object = nil)
-    ["name", "date", "shifts_header", "shifts_subtext", "created_at", "updated_at", "id"]
+    ["name", "date", "start_date", "end_date", "shifts_header", "shifts_subtext", "created_at", "updated_at", "id"]
   end
 
   def self.ransackable_associations(auth_object = nil)
     ["shifts"]
   end
 
+  # Date display methods
+  def date_range_compact
+    if start_date == end_date
+      start_date.strftime("%d.%m.%Y")
+    elsif start_date.month == end_date.month && start_date.year == end_date.year
+      "#{start_date.strftime('%d')}-#{end_date.strftime('%d.%m.%Y')}"
+    elsif start_date.year == end_date.year
+      "#{start_date.strftime('%d.%m.')}-#{end_date.strftime('%d.%m.%Y')}"
+    else
+      "#{start_date.strftime('%d.%m.%Y')}-#{end_date.strftime('%d.%m.%Y')}"
+    end
+  end
+
+  def date_range_detailed
+    if start_date == end_date
+      start_date.strftime("%d. %B %Y")
+    else
+      "#{start_date.strftime('%d. %B %Y')} - #{end_date.strftime('%d. %B %Y')}"
+    end
+  end
+
   private
+
+  def end_date_after_start_date
+    return unless start_date && end_date
+
+    if end_date < start_date
+      errors.add(:end_date, "muss nach dem Startdatum liegen")
+    end
+  end
 
   def check_for_registrations
     if registrations.count > 0

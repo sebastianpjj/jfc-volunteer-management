@@ -1,7 +1,9 @@
 ActiveAdmin.register Event do
-  permit_params :name, :date, :shifts_header, :shifts_subtext, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
+  permit_params :name, :date, :start_date, :end_date, :shifts_header, :shifts_subtext, shifts_attributes: [:id, :name, :group_name, :max_volunteers, :start_date, :end_date, :_destroy]
 
   filter :name
+  filter :start_date
+  filter :end_date
   filter :date
   filter :created_at
   filter :updated_at
@@ -10,7 +12,9 @@ ActiveAdmin.register Event do
     selectable_column
     id_column
     column :name
-    column :date
+    column "Datum" do |event|
+      event.date_range_compact
+    end
     column "Shifts" do |event|
       event.shifts.count
     end
@@ -25,7 +29,9 @@ ActiveAdmin.register Event do
   show do
     attributes_table do
       row :name
-      row :date
+      row "Datum" do |event|
+        event.date_range_detailed
+      end
       row :shifts_header, label: "Shifts Section Header"
       row :shifts_subtext, label: "Shifts Section Subtext"
       row "Capacity Overview" do |event|
@@ -89,40 +95,48 @@ ActiveAdmin.register Event do
   end
 
   form do |f|
-    f.inputs "Event Details" do
-      f.input :name
-      f.input :date, as: :datetime_picker,
+    f.inputs "Veranstaltungsdetails" do
+      f.input :name, label: "Name"
+      f.input :start_date,
+              label: "Startdatum",
               input_html: {
-                value: f.object.date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
-                step: 900  # 15 minute intervals
+                type: 'date',
+                value: f.object.start_date&.strftime('%Y-%m-%d')
               },
-              hint: "Datum und Uhrzeit in lokaler Zeit (Berlin)"
+              hint: "Erstes Datum der Veranstaltung"
+      f.input :end_date,
+              label: "Enddatum",
+              input_html: {
+                type: 'date',
+                value: f.object.end_date&.strftime('%Y-%m-%d')
+              },
+              hint: "Letztes Datum der Veranstaltung"
     end
 
-    f.inputs "Shifts Section Customization" do
+    f.inputs "Schichten-Bereich Anpassung" do
       f.input :shifts_header,
-              label: "Shifts Section Header",
-              hint: "The main heading for the shifts section (default: 'Verfügbare Schichten')"
+              label: "Schichten-Überschrift",
+              hint: "Die Hauptüberschrift für den Schichten-Bereich (Standard: 'Verfügbare Schichten')"
       f.input :shifts_subtext,
               as: :text,
-              label: "Shifts Section Subtext",
-              hint: "Explanatory text below the header to guide volunteers"
+              label: "Schichten-Untertitel",
+              hint: "Erklärungstext unter der Überschrift zur Anleitung der Helfer"
     end
 
-    f.inputs "Shifts" do
+    f.inputs "Schichten" do
       f.has_many :shifts, allow_destroy: true, new_record: true do |s|
-        s.input :name
-        s.input :group_name, hint: "Gruppierung für die Anzeige (z.B. 'Aufbau', 'Verkauf', 'Abbau')"
-        s.input :max_volunteers, label: "Maximum Volunteers", hint: "Wie viele Freiwillige können sich für diese Schicht anmelden?"
+        s.input :name, label: "Schichtname"
+        s.input :group_name, label: "Gruppenname", hint: "Gruppierung für die Anzeige (z.B. 'Aufbau', 'Verkauf', 'Abbau')"
+        s.input :max_volunteers, label: "Max. Helfer", hint: "Wie viele Freiwillige können sich für diese Schicht anmelden?"
         s.input :start_date, as: :datetime_picker,
-                label: "Start Datum/Zeit",
+                label: "Startzeit",
                 input_html: {
                   value: s.object.start_date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
                   step: 900  # 15 minute intervals
                 },
                 hint: "Startzeit in lokaler Zeit (Berlin)"
         s.input :end_date, as: :datetime_picker,
-                label: "End Datum/Zeit",
+                label: "Endzeit",
                 input_html: {
                   value: s.object.end_date&.in_time_zone("Berlin")&.strftime("%Y-%m-%dT%H:%M"),
                   step: 900  # 15 minute intervals

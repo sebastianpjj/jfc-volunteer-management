@@ -328,6 +328,7 @@ de:
       default: "%d.%m.%Y"
       short: "%d.%m."
       long: "%d. %B %Y"
+      short_with_weekday: "%a, %d.%m.%y"
     month_names:
       - ~
       - "Januar"
@@ -377,6 +378,7 @@ de:
       default: "%d.%m.%Y %H:%M"
       short: "%d.%m. %H:%M"
       long: "%d. %B %Y %H:%M:%S"
+      short_with_weekday: "%a, %d.%m.%y"
 
   # Devise German translations
   devise:

@@ -17,7 +17,7 @@ ActiveAdmin.register Shift do
     column "Name", :name
     column "Gruppe", :group_name
     column "Tag" do |shift|
-      shift.start_date.strftime("%d.%m.%Y")
+      I18n.l(shift.start_date, format: :short_with_weekday)
     end
     column "Zeitbereich" do |shift|
       shift.time_range

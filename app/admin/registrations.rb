@@ -23,6 +23,9 @@ ActiveAdmin.register Registration do
     column "Schicht" do |registration|
       "#{registration.shift.name} (#{registration.shift.group_name})"
     end
+    column "Tag" do |registration|
+      I18n.l(registration.shift.start_date, format: :short_with_weekday)
+    end
     column "Zeit" do |registration|
       registration.shift.time_range
     end

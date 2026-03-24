@@ -49,6 +49,16 @@ set :bundle_path, -> { shared_path.join('vendor/bundle') }
 # Passenger settings
 set :passenger_restart_with_touch, true
 
+# Fix Git "dubious ownership" error on the server
+namespace :git do
+  task :fix_safe_directory do
+    on roles(:all) do
+      execute :git, "config --global --add safe.directory #{fetch(:deploy_to)}/repo"
+    end
+  end
+end
+before 'git:update', 'git:fix_safe_directory'
+
 namespace :deploy do
   desc "Make sure local git is in sync with remote."
   task :check_revision do

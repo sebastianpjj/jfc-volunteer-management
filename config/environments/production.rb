@@ -68,8 +68,8 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options  = { host: 'helfer.eintracht-feldberg.net', protocol: :https }
-  config.action_mailer.asset_host           = 'https://helfer.eintracht-feldberg.net'
+  config.action_mailer.default_url_options  = { host: 'helfer.eintracht-feldberg.de', protocol: :https }
+  config.action_mailer.asset_host           = 'https://helfer.eintracht-feldberg.de'
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
@@ -96,6 +96,7 @@ Rails.application.configure do
   # Enable DNS rebinding protection and other `Host` header attacks.
   config.hosts = [
     "helfer.eintracht-feldberg.net",     # Allow requests from example.com
+    "helfer.eintracht-feldberg.de",     # Allow requests from example.com
     # "example.com",     # Allow requests from example.com
     # /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   ]

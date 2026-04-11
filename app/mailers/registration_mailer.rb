@@ -13,7 +13,7 @@ class RegistrationMailer < ApplicationMailer
 
     mail(
       to: @registration.email,
-      subject: 'Bestätigung deiner Anmeldung | JFC Eintracht Feldberg',
+      subject: 'JFC Eintracht Feldberg | Bestätigung deiner Anmeldung',
     )
   end
 end

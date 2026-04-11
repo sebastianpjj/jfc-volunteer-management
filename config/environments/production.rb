@@ -74,8 +74,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp.azurecomm.net',
-    domain:               ENV['SMTP_AZURE_SERVICE_DOMAIN'],
-    # Username is <Azure Communication Services Resource name>.<Entra Application ID>.< Entra Tenant ID>
+    domain:               'jfccommunicationservice.germany.communication.azure.com',
     user_name:            ENV['SMTP_AZURE_SERVICE_USERNAME'],
     password:             ENV['SMTP_AZURE_SERVICE_PW'],
     authentication:       :login,
